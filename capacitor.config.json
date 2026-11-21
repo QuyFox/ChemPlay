@@ -1,0 +1,17 @@
+{
+  "appId": "com.chemquiz.hoahoc",
+  "appName": "Đố Vui Hóa Học",
+  "webDir": "www",
+  "backgroundColor": "#090D16",
+  "android": {
+    "backgroundColor": "#090D16",
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "StatusBar": {
+      "overlaysWebView": false,
+      "style": "DARK",
+      "backgroundColor": "#090D16"
+    }
+  }
+}
