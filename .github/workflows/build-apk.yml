@@ -1,0 +1,59 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout mã nguồn
+        uses: actions/checkout@v4
+
+      - name: 2. Cài đặt Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 3. Cài đặt Java 17 (Capacitor 6)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 4. Cài đặt thư viện Capacitor
+        run: npm install
+
+      - name: 5. Tạo dự án Android
+        run: npx cap add android
+
+      - name: 6. Tạo Icon & Splash Screen tự động
+        run: |
+          if [ -f "assets/icon-only.png" ]; then
+            npx capacitor-assets generate --android --iconBackgroundColor '#090D16' --splashBackgroundColor '#090D16'
+          fi
+
+      - name: 7. Khóa màn hình dọc & đồng bộ Status Bar tối
+        run: python3 patch_android.py
+
+      - name: 8. Đồng bộ code web sang Android
+        run: npx cap sync android
+
+      - name: 9. Biên dịch file APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: 10. Đổi tên file APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk DoVuiHoaHoc.apk
+
+      - name: 11. Xuất Artifact tải về
+        uses: actions/upload-artifact@v4
+        with:
+          name: DoVuiHoaHoc-APK
+          path: DoVuiHoaHoc.apk
+          retention-days: 30
