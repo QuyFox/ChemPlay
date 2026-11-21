@@ -1,0 +1,2260 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#090D16" />
+  <title>Đố Vui Hóa Học 550+ Màn</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #090D16;
+      --bg-card: #131826;
+      --border-card: #252E42;
+      --bg-slot: #1E2538;
+      --border-slot: #2F3B57;
+      --bg-key: #151B2B;
+      --border-key: #242E45;
+      --accent-amber: #F59E0B;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #05080F;
+      color: #F8FAFC;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      overscroll-behavior: none;
+    }
+
+    /* Mobile-first shell centered cleanly on desktop */
+    #app-shell {
+      width: 100%;
+      max-width: 480px;
+      height: 100%;
+      height: 100dvh;
+      margin: 0 auto;
+      background-color: var(--bg-main);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.85);
+    }
+
+    @media (min-width: 481px) {
+      #app-shell {
+        border-left: 1px solid #171E30;
+        border-right: 1px solid #171E30;
+      }
+    }
+
+    /* Hide scrollbar utility */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Answer slots & animations */
+    .answer-slot {
+      background-color: var(--bg-slot);
+      border: 1.5px solid var(--border-slot);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #FFFFFF;
+      transition: transform 0.14s cubic-bezier(0.22, 1, 0.36, 1),
+                  background-color 0.18s ease,
+                  border-color 0.18s ease,
+                  box-shadow 0.18s ease;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .answer-slot.filled {
+      background-color: #242E48;
+      border-color: #4D6291;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28);
+    }
+
+    .answer-slot.filled:active {
+      transform: scale(0.88);
+    }
+
+    .answer-slot.locked {
+      background-color: #2A2213;
+      border-color: #F59E0B;
+      color: #FCD34D;
+      cursor: default;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.22);
+    }
+
+    .answer-slot.correct {
+      background-color: #0D3326 !important;
+      border-color: #10B981 !important;
+      color: #34D399 !important;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.45) !important;
+      animation: slotPop 0.38s ease forwards;
+    }
+
+    .answer-slot.wrong {
+      background-color: #33141B !important;
+      border-color: #EF4444 !important;
+      color: #FCA5A5 !important;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.35) !important;
+    }
+
+    /* Keyboard key button */
+    .key-tile {
+      background: linear-gradient(180deg, #192135 0%, #131928 100%);
+      border: 1px solid var(--border-key);
+      border-radius: 12px;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 1.2rem;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 0 #0B0F19, 0 5px 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.1s ease, opacity 0.18s ease, box-shadow 0.1s ease, background 0.15s ease;
+      cursor: pointer;
+    }
+
+    @media (max-height: 670px) {
+      .key-tile {
+        height: 44px;
+        font-size: 1.08rem;
+      }
+    }
+
+    .key-tile:active:not(.used):not(.eliminated) {
+      transform: translateY(2px) scale(0.95);
+      box-shadow: 0 1px 0 #0B0F19;
+      background: #222D48;
+    }
+
+    .key-tile.used {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.75);
+    }
+
+    .key-tile.eliminated {
+      opacity: 0.14;
+      pointer-events: none;
+      transform: scale(0.92);
+      text-decoration: line-through;
+    }
+
+    /* Gift button pulse subtle glow */
+    .gift-btn {
+      background: #121826;
+      border: 1.5px solid #2A354D;
+      transition: transform 0.14s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .gift-btn:active {
+      transform: scale(0.92);
+    }
+    .gift-btn:hover {
+      border-color: rgba(245, 158, 11, 0.65);
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.2);
+    }
+
+    /* Animations */
+    @keyframes shakeX {
+      0%, 100% { transform: translateX(0); }
+      18% { transform: translateX(-8px); }
+      36% { transform: translateX(8px); }
+      54% { transform: translateX(-6px); }
+      72% { transform: translateX(6px); }
+      90% { transform: translateX(-3px); }
+    }
+
+    .animate-shake {
+      animation: shakeX 0.42s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes slotPop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.13); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes modalIn {
+      0% { opacity: 0; transform: translateY(18px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-pop {
+      animation: modalIn 0.24s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes emojiFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .emoji-item {
+      display: inline-block;
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+      animation: emojiFloat 3.6s ease-in-out infinite;
+    }
+    .emoji-item:nth-child(2) { animation-delay: 0.4s; }
+    .emoji-item:nth-child(3) { animation-delay: 0.8s; }
+
+    /* Subscript styling for pretty formulas */
+    .chem-formula sub {
+      font-size: 0.66em;
+      bottom: -0.22em;
+      position: relative;
+      font-weight: 700;
+    }
+
+    /* Confetti canvas overlay */
+    #confetti-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 60;
+    }
+  </style>
+</head>
+<body>
+  <div id="app-shell">
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- ================= TOP BAR ================= -->
+    <header class="flex items-center justify-between px-4 pt-3 pb-2 shrink-0 z-10" style="padding-top: max(12px, env(safe-area-inset-top));">
+      <!-- Left: Back/Menu + Level Title + Meta -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <button id="btn-open-menu" aria-label="Chọn màn chơi"
+          class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:bg-[#171F33] active:scale-90 transition shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+        </button>
+
+        <div class="flex flex-col min-w-0">
+          <div class="flex items-center gap-2">
+            <h1 id="level-title" class="text-[20px] font-extrabold text-white tracking-tight leading-none">Màn 1</h1>
+            <span id="solved-badge" class="hidden text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">ĐÃ GIẢI</span>
+          </div>
+          <div class="flex items-center gap-2 mt-1">
+            <span id="category-pill" class="text-[11px] font-semibold text-slate-400 truncate max-w-[155px]">Hàng tiêu dùng</span>
+            <span class="text-slate-600 text-[10px]">•</span>
+            <span id="coin-display" class="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400">
+              <span>🪙</span><span id="coin-value">150</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Sound Toggle + Gift Hint Button -->
+      <div class="flex items-center gap-2 shrink-0">
+        <button id="btn-sound" aria-label="Bật tắt âm thanh"
+          class="w-10 h-10 rounded-xl bg-[#121826] border border-[#232D42] flex items-center justify-center text-slate-300 active:scale-90 transition">
+          <!-- Sound icon injected by JS -->
+        </button>
+
+        <button id="btn-open-hint" aria-label="Gợi ý trợ giúp"
+          class="gift-btn w-11 h-11 rounded-xl flex items-center justify-center text-amber-400 relative">
+          <!-- Crisp Gift Box SVG matching reference -->
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="8" width="18" height="4" rx="1"></rect>
+            <path d="M12 8v13"></path>
+            <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path>
+            <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ================= MAIN GAMEPLAY AREA ================= -->
+    <main class="flex-1 flex flex-col items-center justify-between px-4 pb-4 overflow-hidden" style="padding-bottom: max(16px, env(safe-area-inset-bottom));">
+      <!-- Top Visual Block: Emoji Box + Hint -->
+      <section class="w-full flex flex-col items-center mt-3 sm:mt-5">
+        <!-- Emoji Display Card -->
+        <div class="w-[86%] max-w-[320px] bg-[#131826] border border-[#252E42] rounded-[22px] py-4 sm:py-5 px-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)] flex items-center justify-around">
+          <span id="emoji-1" class="emoji-item text-[44px] sm:text-[50px] leading-none">☀️</span>
+          <span id="emoji-2" class="emoji-item text-[44px] sm:text-[50px] leading-none">🧴</span>
+          <span id="emoji-3" class="emoji-item text-[44px] sm:text-[50px] leading-none">⚪</span>
+        </div>
+
+        <!-- Warm Amber Hint Text -->
+        <p id="hint-text" class="mt-4 sm:mt-5 px-3 text-center text-[#F59E0B] font-semibold text-[15px] sm:text-[16.5px] leading-snug max-w-[390px]">
+          Gợi ý: Hợp chất màu trắng trong kem chống nắng và sơn.
+        </p>
+
+        <!-- Shuffle Mode Indicator (only shown when shuffle active) -->
+        <div id="shuffle-indicator" class="hidden mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-400/30 text-indigo-300 text-[11px] font-semibold">
+          <span>🔀</span> Chế độ trộn ngẫu nhiên
+        </div>
+      </section>
+
+      <!-- Flexible Spacer pushing input into comfortable thumb zone -->
+      <div class="flex-1 min-h-[8px]"></div>
+
+      <!-- Bottom Input Block: Helper + Answer Slots + Keyboard -->
+      <section class="w-full flex flex-col items-center">
+        <!-- Helper text & Clear All button -->
+        <div class="flex items-center justify-center gap-3 mb-2.5 min-h-[24px]">
+          <span class="text-[12.5px] text-[#8B95AA] font-medium flex items-center gap-1.5">
+            <span>💡</span> Chạm vào ô chữ cái để xóa
+          </span>
+          <button id="btn-clear-all"
+            class="hidden text-[11.5px] font-semibold px-2.5 py-0.5 rounded-full bg-[#1C2438] text-slate-300 border border-[#2E3A57] active:scale-95 transition">
+            ↺ Xóa hết
+          </button>
+        </div>
+
+        <!-- Answer Slots Container (1 single auto-fitting row) -->
+        <div id="slots-container" class="w-full flex flex-nowrap items-center justify-center gap-[5px] sm:gap-[7px] mb-4 sm:mb-5 px-1">
+          <!-- Slots dynamically rendered by JS -->
+        </div>
+
+        <!-- Keyboard Grid (15 keys: 6-6-3, or 18 keys: 6-6-6 for long formulas) -->
+        <div id="keyboard-container" class="w-full max-w-[400px] flex flex-col gap-2 sm:gap-2.5">
+          <!-- Rows dynamically rendered by JS -->
+        </div>
+      </section>
+    </main>
+
+    <!-- ================= TOAST NOTIFICATION ================= -->
+    <div id="toast" class="pointer-events-none fixed top-16 left-1/2 -translate-x-1/2 z-[70] opacity-0 transition-all duration-200 px-4 py-2 rounded-full bg-[#1A2236] border border-amber-500/40 text-amber-300 text-xs font-bold shadow-xl whitespace-nowrap">
+      Thông báo
+    </div>
+
+    <!-- ================= MODAL: VICTORY ================= -->
+    <div id="modal-victory" class="hidden absolute inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-5">
+      <div class="modal-pop w-full max-w-[360px] bg-[#121826] border border-[#28344E] rounded-[26px] p-6 text-center shadow-2xl relative overflow-hidden">
+        <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-56 h-56 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-400 mb-3">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+        </div>
+
+        <h2 class="text-xl font-extrabold text-white">Chính xác tuyệt đối!</h2>
+        <div id="victory-emojis" class="text-3xl tracking-widest my-2">☀️ 🧴 ⚪</div>
+
+        <!-- Formatted Chemical Formula Box -->
+        <div class="bg-[#0B101B] border border-[#232E47] rounded-2xl py-3.5 px-4 my-3">
+          <div id="victory-formula" class="chem-formula text-3xl font-black text-emerald-400 tracking-wide">TiO<sub>2</sub></div>
+          <div id="victory-name" class="text-[15px] font-bold text-white mt-1.5">Titan(IV) oxit (Titanium dioxide)</div>
+          <div id="victory-category" class="inline-block mt-2 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#1A2338] text-amber-400 border border-[#2C3957]">
+            Hàng tiêu dùng
+          </div>
+        </div>
+
+        <p id="victory-hint" class="text-xs text-slate-400 leading-relaxed mb-4"></p>
+
+        <div id="victory-reward" class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-sm font-bold mb-5">
+          <span>🪙</span> +20 Xu thưởng
+        </div>
+
+        <button id="btn-next-level"
+          class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-[#051510] font-extrabold text-base shadow-[0_6px_20px_rgba(16,185,129,0.35)] active:scale-[0.98] transition">
+          Màn tiếp theo →
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= MODAL: GIFT / HINTS ================= -->
+    <div id="modal-hint" class="hidden absolute inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-3 sm:p-5">
+      <div class="modal-pop w-full max-w-[390px] bg-[#121826] border border-[#28344E] rounded-[26px] p-5 shadow-2xl">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">🎁</span>
+            <div>
+              <h2 class="text-lg font-extrabold text-white leading-tight">Hộp Quà Trợ Giúp</h2>
+              <p class="text-xs text-amber-400 font-semibold">Bạn đang có: <span id="hint-coin-balance">150</span> 🪙</p>
+            </div>
+          </div>
+          <button id="btn-close-hint" class="w-9 h-9 rounded-xl bg-[#1B2336] text-slate-300 flex items-center justify-center active:scale-90 transition">✕</button>
+        </div>
+
+        <div class="flex flex-col gap-2.5">
+          <!-- Option 1: Reveal 1 char -->
+          <button id="act-reveal-one"
+            class="w-full flex items-center justify-between p-3.5 rounded-2xl bg-[#182033] border border-[#293652] hover:border-amber-500/50 active:scale-[0.98] transition text-left">
+            <div class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-lg font-bold">🔎</span>
+              <div>
+                <div class="text-sm font-bold text-white">Mở 1 ký tự đúng</div>
+                <div class="text-[11.5px] text-slate-400">Điền và khóa chắc chắn 1 ô đáp án</div>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-xl bg-amber-500/20 text-amber-300 text-xs font-extrabold shrink-0">30 🪙</span>
+          </button>
+
+          <!-- Option 2: Remove distractors -->
+          <button id="act-remove-noise"
+            class="w-full flex items-center justify-between p-3.5 rounded-2xl bg-[#182033] border border-[#293652] hover:border-sky-500/50 active:scale-[0.98] transition text-left">
+            <div class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center text-lg font-bold">✂️</span>
+              <div>
+                <div class="text-sm font-bold text-white">Loại bỏ ký tự nhiễu</div>
+                <div class="text-[11.5px] text-slate-400">Gạch bỏ bớt các phím sai trên bàn phím</div>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-xl bg-sky-500/20 text-sky-300 text-xs font-extrabold shrink-0">40 🪙</span>
+          </button>
+
+          <!-- Option 3: Solve entire level -->
+          <button id="act-solve-level"
+            class="w-full flex items-center justify-between p-3.5 rounded-2xl bg-[#182033] border border-[#293652] hover:border-emerald-500/50 active:scale-[0.98] transition text-left">
+            <div class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-lg font-bold">⚡</span>
+              <div>
+                <div class="text-sm font-bold text-white">Giải luôn màn này</div>
+                <div class="text-[11.5px] text-slate-400">Xem ngay công thức & tên chất đầy đủ</div>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 text-xs font-extrabold shrink-0">80 🪙</span>
+          </button>
+
+          <!-- Option 4: Free Coins -->
+          <button id="act-free-coins"
+            class="w-full flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 to-orange-500/15 border border-amber-500/40 active:scale-[0.98] transition text-left mt-1">
+            <div class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded-xl bg-amber-500/25 text-amber-300 flex items-center justify-center text-lg font-bold">🪙</span>
+              <div>
+                <div class="text-sm font-bold text-amber-200">Nhận +100 xu miễn phí</div>
+                <div class="text-[11.5px] text-amber-200/70">Quà tiếp sức học Hóa, không quảng cáo!</div>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-xl bg-amber-400 text-[#1A1204] text-xs font-extrabold shrink-0">MIỄN PHÍ</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL: LEVEL SELECTOR & FILTER ================= -->
+    <div id="modal-menu" class="hidden absolute inset-0 z-50 bg-[#090D16] flex flex-col">
+      <!-- Menu Header -->
+      <div class="flex items-center justify-between px-4 pt-3 pb-3 border-b border-[#1A2236] shrink-0" style="padding-top: max(12px, env(safe-area-inset-top));">
+        <div>
+          <h2 class="text-lg font-extrabold text-white">Danh Sách Màn Chơi</h2>
+          <p id="progress-text" class="text-xs text-slate-400 font-medium mt-0.5">Đã vượt qua 0 / 550 màn</p>
+        </div>
+        <button id="btn-close-menu" class="w-10 h-10 rounded-xl bg-[#151C2E] border border-[#242F49] text-slate-200 flex items-center justify-center active:scale-90 transition">✕</button>
+      </div>
+
+      <!-- Progress Bar + Controls -->
+      <div class="px-4 pt-3 pb-2 shrink-0 space-y-3 border-b border-[#161D2E]">
+        <!-- Progress Bar -->
+        <div class="w-full h-2 rounded-full bg-[#161E31] overflow-hidden">
+          <div id="progress-bar-fill" class="h-full bg-gradient-to-r from-emerald-500 to-amber-400 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+        <!-- Search & Play Mode Toggle -->
+        <div class="flex items-center gap-2">
+          <div class="relative flex-1">
+            <input id="menu-search" type="text" placeholder="Tìm số màn, tên chất, công thức..."
+              class="w-full bg-[#131929] border border-[#25304A] rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/60" />
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs">🔍</span>
+          </div>
+
+          <button id="btn-toggle-shuffle"
+            class="px-3 py-2 rounded-xl text-xs font-bold border transition shrink-0 flex items-center gap-1.5 bg-[#131929] border-[#25304A] text-slate-300">
+            <span id="shuffle-icon">➡️</span>
+            <span id="shuffle-label">Tuần tự</span>
+          </button>
+        </div>
+
+        <!-- Category Filter Chips -->
+        <div id="category-filters" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+          <!-- Filter pills rendered by JS -->
+        </div>
+
+        <!-- Quick Actions Row -->
+        <div class="flex items-center justify-between text-[11px]">
+          <button id="btn-jump-unsolved" class="text-amber-400 font-semibold hover:underline">
+            🎯 Tới màn chưa giải gần nhất
+          </button>
+          <button id="btn-ask-reset" class="text-slate-500 hover:text-rose-400 font-medium">
+            Đặt lại tiến độ
+          </button>
+        </div>
+
+        <!-- Inline Reset Confirm Panel (Never uses window.confirm) -->
+        <div id="reset-confirm-box" class="hidden p-3 rounded-xl bg-rose-950/50 border border-rose-500/40 flex items-center justify-between gap-2">
+          <span class="text-xs text-rose-200 font-medium">Xóa toàn bộ tiến độ đã lưu?</span>
+          <div class="flex items-center gap-2 shrink-0">
+            <button id="btn-cancel-reset" class="px-2.5 py-1 rounded-lg bg-[#1C2438] text-slate-300 text-xs font-semibold">Hủy</button>
+            <button id="btn-confirm-reset" class="px-2.5 py-1 rounded-lg bg-rose-600 text-white text-xs font-bold">Xóa sạch</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scrollable Level Grid -->
+      <div id="level-grid" class="flex-1 overflow-y-auto px-4 py-3 grid grid-cols-5 gap-2 content-start">
+        <!-- Level tiles dynamically rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * ============================================================================
+     * KHO DỮ LIỆU 550+ CÂU HỎI HÓA HỌC THỰC TẾ & CHÍNH XÁC
+     * Định dạng mỗi dòng: CongThuc|Emoji1 Emoji2 Emoji3|GoiY|MaChuDe|TenGoi
+     * Mã chủ đề:
+     *   YT   = Y tế & Dược phẩm
+     *   THPT = Chương trình Hóa THPT
+     *   TD   = Hàng tiêu dùng & Thực phẩm
+     *   NT   = Nguyên tố Hóa học
+     *   CN   = Công nghiệp & Khoáng vật
+     * ============================================================================
+     */
+
+    // 3 Màn biểu tượng từ ảnh mẫu được đặt ở đầu để người chơi làm quen ngay
+    const RAW_FEATURED = `
+TiO2|☀️ 🧴 ⚪|Hợp chất màu trắng trong kem chống nắng và sơn.|TD|Titan(IV) oxit (Titanium dioxide)
+Sn|🥫 🛡️ 🥩|Kim loại dùng tráng lên sắt để làm hộp thực phẩm (sắt tây).|NT|Thiếc (Tin)
+C8H9NO2|🤕 💊 🩸|Công thức hóa học của thuốc hạ sốt, giảm đau quốc dân Paracetamol.|YT|Paracetamol (Acetaminophen)
+`.trim();
+
+    // CHỦ ĐỀ 1: Y TẾ & DƯỢC PHẨM (88 câu)
+    const RAW_YT = `
+C9H8O4|💊 💓 🌡️|Thuốc giảm đau, hạ sốt và chống kết tập tiểu cầu kinh điển Aspirin.|YT|Aspirin (Axit axetylsalixylic)
+C13H18O2|🦵 💊 🔥|Thuốc kháng viêm, giảm đau nhức cơ xương khớp phổ biến Ibuprofen.|YT|Ibuprofen
+C6H8O6|🍊 🍋 🛡️|Vitamin C giúp tăng sức đề kháng và chống chảy máu chân răng.|YT|Vitamin C (Axit ascorbic)
+C6H12O6|🏥 💧 💪|Đường đơn dùng trong chai dịch truyền bổ sung năng lượng cấp cứu.|YT|Glucose (Đường nho)
+H2O2|🩹 🫧 🦠|Dung dịch oxy già sủi bọt trắng dùng rửa sát khuẩn vết thương hở.|YT|Hydro peroxit (Oxy già)
+C2H5OH|🧴 💉 🦠|Cồn y tế 70 độ dùng sát trùng da trước khi tiêm và rửa tay.|YT|Etanol (Cồn y tế)
+KMnO4|🟣 💧 🩹|Thuốc tím pha loãng dùng sát trùng vết thương, rửa rau sống.|YT|Kali pemanganat (Thuốc tím)
+Al(OH)3|🤢 💊 🧪|Bazơ lưỡng tính có trong thuốc chữ P giúp trung hòa axit dạ dày.|YT|Nhôm hidroxit
+Mg(OH)2|🥛 🤢 💊|Sữa magie giúp giảm ợ chua đau dạ dày và hỗ trợ nhuận tràng.|YT|Magie hidroxit
+NaHCO3|🫧 🤢 💊|Thuốc muối trung hòa nhanh cơn đau ợ nóng do dư axit dạ dày.|YT|Natri bicacbonat
+NaCl|👃 👁️ 💧|Muối pha nồng độ 0,9% thành nước muối sinh lý rửa mắt mũi.|YT|Natri clorua (Nước muối sinh lý)
+N2O|😷 😂 🦷|Khí cười được dùng để giảm đau và gây mê nhẹ trong nha khoa.|YT|Đinitơ oxit (Khí cười)
+C4H10O|😴 🏥 💨|Đietyl ete - chất lỏng dễ bay hơi từng dùng làm thuốc gây mê phẫu thuật.|YT|Đietyl ete
+CHCl3|😵 🧪 🏥|Clorofom - chất lỏng nặng từng làm thuốc gây mê nổi tiếng thế kỷ 19.|YT|Clorofom (Triclorometan)
+C8H10N4O2|☕ ⚡ 🧠|Hoạt chất Caffeine kích thích tỉnh táo thần kinh trong cà phê và thuốc cảm.|YT|Caffeine
+C9H13NO3|💓 ⚡ 💉|Hormone Adrenaline tiêm cấp cứu sốc phản vệ và ngừng tim.|YT|Adrenaline (Epinephrine)
+C8H11NO3|🧠 ⚡ 💓|Chất dẫn truyền thần kinh Noradrenaline giúp tăng huyết áp khi cấp cứu.|YT|Noradrenaline
+C8H11NO2|😊 🧠 ✨|Chất dẫn truyền thần kinh Dopamine tạo cảm giác hứng khởi và phần thưởng.|YT|Dopamine
+C10H12N2O|😌 🧠 🌙|Hormone Serotonin giúp ổn định tâm trạng, giảm lo âu và trầm cảm.|YT|Serotonin
+C13H16N2O2|🌙 😴 💊|Hormone Melatonin điều hòa đồng hồ sinh học giúp dễ đi vào giấc ngủ.|YT|Melatonin
+C5H9N3|🤧 🔴 🐝|Chất trung gian Histamine giải phóng khi cơ thể bị dị ứng, nổi mề đay.|YT|Histamine
+I2|🟤 🩹 🦠|Đơn chất màu tím đen pha cồn làm dung dịch sát khuẩn vết thương ngoài da.|YT|Iốt sát khuẩn
+AgNO3|🧪 🩹 ⚪|Muối bạc dùng chấm sát khuẩn và đốt mụn cóc trong da liễu.|YT|Bạc nitrat
+BaSO4|🩻 🥤 🏥|Muối không tan dùng uống làm chất cản quang khi chụp X-quang dạ dày.|YT|Bari sunfat cản quang
+MgSO4|🛁 🤰 💉|Muối Epsom giúp thư giãn cơ bắp và chống co giật trong sản khoa.|YT|Magie sunfat
+KCl|🍌 💉 ⚡|Muối bù điện giải quan trọng điều trị tình trạng hạ kali máu.|YT|Kali clorua y tế
+FeSO4|🩸 💊 💪|Muối sắt(II) dùng trong viên uống điều trị bệnh thiếu máu thiếu sắt.|YT|Sắt(II) sunfat
+C7H6O3|🧴 🌿 💊|Axit salicylic chiết từ vỏ cây liễu dùng trị mụn, chai chân và làm Aspirin.|YT|Axit salicylic
+C10H20O|🌿 ❄️ 👃|Tinh chất Menthol từ lá bạc hà giúp thông mũi, giảm ngứa và làm mát da.|YT|Menthol
+C10H16O|🌳 🧴 💆|Long não Camphor dùng trong dầu xoa bóp giảm đau nhức, giảm ho.|YT|Camphor (Long não)
+H3BO3|👁️ 💧 🧪|Axit yếu pha loãng làm dung dịch rửa mắt và sát khuẩn nhẹ ngoài da.|YT|Axit boric
+HCHO|🧪 🧫 🏥|Khí hòa tan trong nước tạo Formalin dùng bảo quản mẫu bệnh phẩm giải phẫu.|YT|Fomanđehit (Formalin)
+C6H5OH|🏥 🧼 🦠|Phenol - hóa chất sát trùng đầu tiên trong lịch sử phẫu thuật hiện đại.|YT|Phenol
+CH4N2O|🚽 🧬 💧|Hợp chất Urê - sản phẩm thải nitơ chủ yếu trong nước tiểu người.|YT|Urê (Carbamide)
+C5H4N4O3|🦶 🔥 🥩|Axit uric tích tụ thành tinh thể nhọn ở khớp gây ra bệnh Gout.|YT|Axit uric
+C3H6O3|🏃 🦵 😫|Axit lactic sinh ra trong cơ bắp gây cảm giác đau mỏi khi chạy bộ gắng sức.|YT|Axit lactic
+C27H46O|🍔 🩸 🫀|Chất béo Cholesterol có trong màng tế bào, dư thừa gây xơ vữa động mạch.|YT|Cholesterol
+C17H19NO3|💉 🌺 😴|Thuốc giảm đau mạnh bậc nhất nhóm opioid dùng cho bệnh nhân ung thư.|YT|Morphine
+C18H21NO3|😷 💊 🌺|Dẫn xuất giảm ho và giảm đau mức độ nhẹ đến trung bình Codeine.|YT|Codeine
+C20H24N2O2|🦟 🤒 🌿|Hoạt chất Quinine chiết từ vỏ cây canh-ki-na từng đặc trị bệnh sốt rét.|YT|Quinine
+C10H14N2|🚬 🧠 ⚠️|Hoạt chất gây nghiện cực mạnh có trong lá cây thuốc lá.|YT|Nicotine
+C14H22N2O|🦷 💉 😶|Thuốc gây tê cục bộ phổ biến hàng đầu trong nhổ răng và tiểu phẫu.|YT|Lidocaine
+C15H22O5|🌿 🦟 🏆|Hoạt chất Artemisinin trị sốt rét giúp nhà khoa học Đồ U U đoạt giải Nobel.|YT|Artemisinin
+C14H14O3|🦴 💊 🔥|Thuốc kháng viêm giảm đau khớp tác dụng kéo dài Naproxen.|YT|Naproxen
+C4H11N5|🩸 🍬 💊|Thuốc uống hàng đầu kiểm soát đường huyết cho bệnh nhân tiểu đường tuýp 2.|YT|Metformin
+C13H21NO3|🫁 💨 💊|Hoạt chất Salbutamol trong bình xịt cắt cơn hen suyễn tức thì.|YT|Salbutamol (Albuterol)
+C10H15NO|👃 🌿 💊|Hoạt chất Ephedrine chiết từ cây ma hoàng giúp thông mũi, giãn phế quản.|YT|Ephedrine
+C17H23NO3|👁️ 💉 🌿|Atropine giúp làm giãn đồng tử khi khám mắt và giải độc thuốc trừ sâu.|YT|Atropine
+C9H11NO2|👄 🧴 ❄️|Thuốc gây tê bề mặt niêm mạc Benzocaine trong gel trị nhiệt miệng.|YT|Benzocaine
+C13H20N2O2|💉 🦷 🏥|Thuốc gây tê cục bộ cổ điển nổi tiếng mang tên Novocain (Procaine).|YT|Procaine (Novocain)
+C6H7N3O|🫁 🦠 💊|Thuốc kháng lao thiết yếu hàng đầu mang tên Isoniazid.|YT|Isoniazid
+C5H5N3O|🫁 💊 🛡️|Thuốc phối hợp điều trị bệnh lao phổi Pyrazinamide.|YT|Pyrazinamide
+C6H9N3O3|🦠 🦷 💊|Thuốc Metronidazole diệt vi khuẩn kỵ khí, ký sinh trùng và viêm nha chu.|YT|Metronidazole
+C8H11N5O3|👄 🦠 💊|Thuốc kháng virus Acyclovir đặc trị bệnh zona thần kinh và thủy đậu.|YT|Acyclovir
+C16H19N3O5S|🦠 💊 🏥|Kháng sinh nhóm beta-lactam phổ biến hàng đầu Amoxicillin.|YT|Amoxicillin
+C16H18N2O4S|🍄 🦠 🏆|Kháng sinh huyền thoại Penicillin G cứu sống hàng trăm triệu người.|YT|Penicillin G
+C6H8N2O2S|🧪 🦠 💊|Kháng sinh tổng hợp đầu tiên nhóm Sulfamid: Sulfanilamide.|YT|Sulfanilamide
+C17H21NO|🤧 🚗 😴|Thuốc kháng histamin thế hệ 1 trị dị ứng, say xe gây buồn ngủ Diphenhydramine.|YT|Diphenhydramine
+C16H13ClN2O|😰 💊 😴|Thuốc an thần, chống co giật nổi tiếng Diazepam (Seduxen).|YT|Diazepam
+C12H12N2O3|🧠 ⚡ 💊|Thuốc chống động kinh và an thần kinh điển Phenobarbital.|YT|Phenobarbital
+C4H9NO2|🧠 😌 🛑|Chất dẫn truyền thần kinh ức chế chính của não bộ giúp dịu căng thẳng (GABA).|YT|GABA (Axit gamma-aminobutyric)
+C5H9NO3S|🗣️ 💧 🏥|Acetylcysteine vừa là thuốc tiêu đờm vừa giải độc quá liều Paracetamol.|YT|Acetylcysteine (NAC)
+C5H4N4O|🦶 💊 🛡️|Thuốc Allopurinol dùng lâu dài để hạ axit uric ngăn cơn Gout.|YT|Allopurinol
+C22H25NO6|🦶 ⚡ 🌺|Thuốc Colchicine cắt nhanh cơn đau viêm khớp Gout cấp tính.|YT|Colchicine
+C17H19N3O3S|🔥 🤢 💊|Thuốc ức chế bơm proton giảm tiết axit dạ dày nổi tiếng Omeprazole.|YT|Omeprazole
+C10H16N6S|🤢 💊 🧪|Thuốc kháng thụ thể H2 giảm axit điều trị loét dạ dày Cimetidine.|YT|Cimetidine
+C19H16O4|🩸 🫀 💊|Thuốc chống đông máu đường uống ngăn ngừa cục máu đông Warfarin.|YT|Warfarin
+C21H20O6|🟡 🌿 🤢|Hoạt chất Curcumin màu vàng trong củ nghệ giúp lành vết loét dạ dày.|YT|Curcumin
+C14H12O3|🍇 🍷 ❤️|Chất chống oxy hóa Resveratrol trong vỏ nho đỏ tốt cho tim mạch.|YT|Resveratrol
+Li2CO3|🧠 ⚖️ 💊|Muối Liti cacbonat dùng ổn định khí sắc cho người rối loạn lưỡng cực.|YT|Liti cacbonat
+KI|☢️ 🦋 💊|Viên Kali iotua giúp bảo vệ tuyến giáp trước nguy cơ nhiễm xạ.|YT|Kali iotua
+ZnSO4|👶 💧 💊|Muối kẽm sunfat hỗ trợ rút ngắn thời gian tiêu chảy cấp ở trẻ em.|YT|Kẽm sunfat
+CaCl2|🦴 💉 ⚡|Muối tiêm tĩnh mạch cấp cứu hạ canxi máu và chống dị ứng nặng.|YT|Canxi clorua y tế
+Na2S2O3|☠️ 💉 🛡️|Natri thiosunfat dùng làm thuốc giải độc ngộ độc xyanua cấp.|YT|Natri thiosunfat
+O2|🫁 🏥 💨|Khí đựng trong bình xanh giúp bệnh nhân suy hô hấp thở cấp cứu.|YT|Khí Oxy y tế
+C3H8O|🧴 🩹 🦠|Cồn Isopropyl nồng độ 70% chuyên sát khuẩn dụng cụ y tế và da.|YT|Isopropanol (Cồn tẩy rửa y tế)
+C2H4O|🏥 💨 🦠|Khí Etylen oxit dùng tiệt trùng dụng cụ phẫu thuật chịu nhiệt kém.|YT|Etylen oxit
+C6H14O6|🚽 🍬 💊|Đường rượu Sorbitol dùng làm thuốc nhuận tràng trị táo bón nhẹ.|YT|Sorbitol
+C5H12O5|🦷 🍬 🛡️|Đường tự nhiên Xylitol trong kẹo cao su giúp ngăn vi khuẩn gây sâu răng.|YT|Xylitol
+C2H7NO3S|👁️ ⚡ 🥤|Axit amin Taurine tốt cho võng mạc mắt và có trong nước tăng lực.|YT|Taurine
+C4H9N3O2|💪 🏋️ ⚡|Hợp chất Creatine giúp tăng sức mạnh và dự trữ năng lượng cơ bắp.|YT|Creatine
+C14H10O4|🧴 🔴 ✨|Benzoyl peroxide - hoạt chất diệt khuẩn trị mụn trứng cá mạnh mẽ.|YT|Benzoyl peroxide
+C9H16O4|🧴 ✨ 🌿|Axit azelaic giúp trị mụn trứng cá, giảm mẩn đỏ và mờ thâm da.|YT|Axit azelaic
+C20H28O2|🧴 🧬 ✨|Hoạt chất Tretinoin dẫn xuất Vitamin A trị mụn và tái tạo da chuyên sâu.|YT|Tretinoin
+C9H15N5O|💇‍♂️ 💧 🌱|Hoạt chất Minoxidil dạng bôi giúp kích thích mọc tóc trị hói đầu.|YT|Minoxidil
+C12H17NO|🦟 🛡️ 🧴|Hoạt chất DEET phổ biến nhất trong bình xịt chống muỗi đốt sốt xuất huyết.|YT|DEET
+C17H21NO4|🚢 🤢 🩹|Hoạt chất Scopolamine có trong miếng dán sau tai chống say tàu xe.|YT|Scopolamine
+C4H3F7O|😷 🏥 💨|Sevoflurane - thuốc gây mê đường hô hấp hiện đại, an toàn và hồi tỉnh nhanh.|YT|Sevoflurane
+C2H5Cl|⚽ ❄️ 🦵|Etyl clorua dạng bình xịt làm lạnh tê giảm đau tức thì trên sân bóng.|YT|Etyl clorua
+C9H13NO2|👃 💨 💊|Hoạt chất Phenylephrine làm co mạch giúp giảm nghẹt mũi trong thuốc cảm.|YT|Phenylephrine
+C6H5NO2|💊 🥩 🧬|Vitamin B3 dạng axit nicotinic giúp giảm mỡ máu xấu.|YT|Niacin (Vitamin B3)
+C8H11NO3|🍌 💊 🧠|Vitamin B6 (Pyridoxine) cần thiết cho hệ thần kinh và giảm ốm nghén.|YT|Vitamin B6 (Pyridoxine)
+C27H44O|☀️ 🦴 💊|Vitamin D3 tổng hợp dưới ánh nắng giúp cơ thể hấp thu canxi tối đa.|YT|Vitamin D3 (Cholecalciferol)
+C29H50O2|🥜 ✨ 💊|Vitamin E tan trong dầu giúp chống oxy hóa và làm đẹp da.|YT|Vitamin E (Alpha-tocopherol)
+C19H19N7O6|🤰 🥬 💊|Vitamin B9 (Axit folic) cực kỳ quan trọng ngừa dị tật thai nhi.|YT|Axit folic (Vitamin B9)
+C10H16N2O3S|💅 💇‍♀️ 💊|Vitamin B7 (Biotin) giúp nuôi dưỡng tóc chắc khỏe và móng tay không gãy.|YT|Biotin (Vitamin B7)
+C17H20N4O6|🥛 💛 💊|Vitamin B2 (Riboflavin) tạo màu vàng tươi đặc trưng khi uống viên B-complex.|YT|Vitamin B2 (Riboflavin)
+SeS2|🧴 ❄️ 💇|Selen đisunfua hoạt chất trị gàu và nấm da đầu hiệu quả cao.|YT|Selen đisunfua
+`.trim();
+
+    // CHỦ ĐỀ 2: CHƯƠNG TRÌNH HÓA THPT - VÔ CƠ & HỮU CƠ (152 câu)
+    const RAW_THPT = `
+HCl|🧪 🤢 ⚠️|Axit mạnh có trong dịch vị dạ dày, bốc khói trong không khí ẩm.|THPT|Axit clohidric
+H2SO4|🧪 🔥 ⚠️|Axit vô cơ mạnh, háo nước, làm than hóa đường kính trắng.|THPT|Axit sunfuric
+HNO3|🧪 🟡 💨|Axit mạnh có tính oxy hóa cao, hòa tan được đồng giải phóng khí nâu đỏ.|THPT|Axit nitric
+H3PO4|🧪 🫧 🥤|Axit trung bình ba nấc, nguyên liệu sản xuất phân lân.|THPT|Axit photphoric
+H2CO3|🫧 🥤 🧪|Axit rất yếu, không bền, dễ phân hủy ngay thành nước và khí CO2.|THPT|Axit cacbonic
+H2S|🥚 🤢 💨|Khí có mùi trứng thối đặc trưng, tan trong nước tạo axit rất yếu.|THPT|Hiđro sunfua
+HF|🧪 🪟 ⚠️|Axit yếu duy nhất có khả năng ăn mòn thủy tinh (SiO2).|THPT|Axit flohidric
+HBr|🧪 💧 🔬|Axit mạnh hơn HCl, được tạo thành khi hòa tan khí hiđro bromua vào nước.|THPT|Axit bromhidric
+HI|🧪 💜 ⚡|Axit không có oxy mạnh nhất trong dãy axit halogenhiđric.|THPT|Axit iothidric
+HClO|🧪 👕 ⚪|Axit yếu nhưng có tính oxy hóa cực mạnh giúp tẩy trắng vải sợi.|THPT|Axit hipoclorơ
+HClO4|🧪 ⚡ 🏆|Một trong những axit vô cơ có oxy mạnh nhất được biết đến.|THPT|Axit pecloric
+H2SO3|🧪 💨 🌧️|Axit yếu tạo thành khi khí lưu huỳnh đioxit tan vào nước mưa.|THPT|Axit sunfurơ
+H2SiO3|🧪 🌫️ ⚪|Axit duy nhất ở dạng kết tủa keo màu trắng không tan trong nước.|THPT|Axit silixic
+HCOOH|🐜 🔥 🧪|Axit hữu cơ đơn giản nhất, có trong nọc kiến và tham gia tráng bạc.|THPT|Axit fomic
+CH3COOH|🍶 🥗 🧪|Axit cacboxylic no đơn chức có 2 cacbon tạo nên vị chua giấm ăn.|THPT|Axit axetic
+C2H5COOH|🧪 🧀 🔬|Axit propionic - đồng đẳng kế tiếp ngay sau axit axetic.|THPT|Axit propionic
+C3H4O2|🧪 🔗 🔬|Axit không no đơn giản nhất chứa một liên kết đôi (Axit acrylic).|THPT|Axit acrylic
+C15H31COOH|🌴 🧼 🧪|Axit béo no có 16 nguyên tử cacbon chiết xuất nhiều từ dầu cọ.|THPT|Axit panmitic
+C17H35COOH|🕯️ 🥩 🧪|Axit béo no có 18 nguyên tử cacbon phổ biến trong mỡ động vật.|THPT|Axit stearic
+C17H33COOH|🫒 💧 🧪|Axit béo không no có 1 liên kết đôi trong phân tử, ở thể lỏng.|THPT|Axit oleic
+C17H31COOH|🌻 💧 🧪|Axit béo không no chứa 2 liên kết đôi trong gốc hiđrocacbon.|THPT|Axit linoleic
+NaOH|🧪 🧼 🔵|Bazơ mạnh làm quỳ tím hóa xanh, hút ẩm mạnh, còn gọi là xút ăn da.|THPT|Natri hidroxit
+KOH|🧪 🧼 🟣|Bazơ kiềm mạnh tương tự NaOH, dùng sản xuất xà phòng mềm lỏng.|THPT|Kali hidroxit
+Ca(OH)2|🥛 🧱 🫧|Dung dịch nước vôi trong dùng làm thuốc thử nhận biết khí CO2.|THPT|Canxi hidroxit
+Ba(OH)2|🧪 ⚪ 🔬|Bazơ tan mạnh, tạo kết tủa trắng bền khi gặp ion sunfat.|THPT|Bari hidroxit
+LiOH|🚀 💨 🔵|Bazơ kiềm nhẹ dùng hấp thụ khí CO2 trong khoang tàu vũ trụ.|THPT|Liti hidroxit
+Fe(OH)3|🟤 🧪 🧱|Kết tủa màu nâu đỏ đặc trưng khi cho muối sắt(III) gặp dung dịch kiềm.|THPT|Sắt(III) hidroxit
+Fe(OH)2|⚪ 🟢 🧪|Kết tủa trắng xanh rất dễ bị không khí oxy hóa chuyển sang nâu đỏ.|THPT|Sắt(II) hidroxit
+Cu(OH)2|🔵 🧪 🍬|Kết tủa xanh lam hòa tan thành dung dịch xanh thẫm khi gặp ancol đa chức.|THPT|Đồng(II) hidroxit
+Zn(OH)2|⚪ ⚖️ 🧪|Kết tủa trắng keo có tính lưỡng tính, tan được trong cả axit lẫn kiềm.|THPT|Kẽm hidroxit
+Cr(OH)3|🟢 ⚖️ 🧪|Kết tủa màu lục xám có tính lưỡng tính tương tự nhôm hiđroxit.|THPT|Crom(III) hidroxit
+NH3|💨 🔵 👃|Khí không màu, mùi khai xốc, làm giấy quỳ tím ẩm chuyển màu xanh.|THPT|Amoniac
+Fe2O3|🔴 🧲 🪨|Oxit sắt màu nâu đỏ không có từ tính, thành phần chính của gỉ sắt.|THPT|Sắt(III) oxit
+Fe3O4|⚫ 🧲 🪨|Oxit sắt từ màu đen, bị nam châm hút mạnh.|THPT|Sắt từ oxit
+FeO|⚫ 🧪 🔥|Oxit sắt(II) màu đen, chỉ thể hiện tính khử khi gặp axit nitric.|THPT|Sắt(II) oxit
+Al2O3|💎 ⚪ ⚖️|Oxit lưỡng tính siêu cứng, nóng chảy trên 2000°C, không tan trong nước.|THPT|Nhôm oxit
+CuO|⚫ 🔥 🧪|Chất rắn màu đen, bị khí H2 hoặc CO khử nóng thành đồng màu đỏ.|THPT|Đồng(II) oxit
+Cu2O|🧱 🔴 🧪|Kết tủa màu đỏ gạch tạo ra khi đun nóng glucose với Cu(OH)2.|THPT|Đồng(I) oxit
+Cr2O3|🟢 🎨 ⚖️|Oxit lưỡng tính màu lục thẫm dùng tạo màu xanh cho đồ sứ và thủy tinh.|THPT|Crom(III) oxit
+CrO3|🔴 🔥 🧪|Oxit axit màu đỏ thẫm, chất oxy hóa cực mạnh làm cồn bốc cháy ngay.|THPT|Crom(VI) oxit
+SO2|💨 🌹 ⚪|Khí mùi hắc làm mất màu nước brom và cánh hoa hồng.|THPT|Lưu huỳnh đioxit
+SO3|💨 🧪 🔥|Oxit axit tác dụng mãnh liệt với nước tạo thành axit sunfuric.|THPT|Lưu huỳnh trioxit
+NO|💨 🟤 🔬|Khí không màu, hóa nâu đỏ ngay lập tức khi tiếp xúc với không khí.|THPT|Nitơ oxit
+NO2|🟤 💨 ⚠️|Khí màu nâu đỏ mùi gắt sinh ra khi đồng phản ứng với HNO3 đặc.|THPT|Nitơ đioxit
+N2O5|⚪ ❄️ 🧪|Anhiđrit nitric - oxit axit rắn màu trắng tương ứng với axit HNO3.|THPT|Đinitơ pentaoxit
+CO|💨 ☠️ 🔥|Oxit trung tính không màu, không mùi, dùng khử oxit kim loại ở nhiệt độ cao.|THPT|Cacbon monoxit
+CO2|💨 ❄️ 🧯|Khí không duy trì sự cháy, làm đục nước vôi trong, nén lạnh tạo đá khô.|THPT|Cacbon đioxit
+P2O5|⚪ ☁️ 💧|Bột trắng tơi rất háo nước, tạo thành khi đốt cháy phốt pho trong oxy.|THPT|Điphotpho pentaoxit
+MnO2|⚫ 🔋 ⚡|Chất rắn màu đen làm xúc tác phân hủy nhanh H2O2 và KClO3 sinh khí oxy.|THPT|Mangan đioxit
+Na2O2|🟡 🤿 💨|Chất rắn màu vàng nhạt tác dụng với CO2 giải phóng khí oxy trong tàu ngầm.|THPT|Natri peroxit
+KO2|🟡 🚀 💨|Kali supeoxit dùng tái tạo khí oxy trong mặt nạ phòng độc và tàu vũ trụ.|THPT|Kali supeoxit
+BaO|⚪ 🔥 🧪|Oxit bazơ tan mạnh trong nước tạo dung dịch kiềm mạnh.|THPT|Bari oxit
+MgO|⚪ 🔥 🧱|Bột trắng sinh ra khi đốt cháy sáng chói dải magie trong không khí.|THPT|Magie oxit
+PbO|🟡 🎨 🧪|Oxit chì màu vàng dùng trong sản xuất thủy tinh pha lê lấp lánh.|THPT|Chì(II) oxit
+Ag2O|🟤 🪞 🧪|Oxit bạc màu nâu đen dễ bị nhiệt phân hoàn toàn thành kim loại bạc.|THPT|Bạc oxit
+HgO|🔴 🌡️ 🔥|Chất rắn màu đỏ từng được Lavoisier nung nóng để tìm ra khí oxy.|THPT|Thủy ngân(II) oxit
+H2O|💧 🌍 ❄️|Hợp chất quen thuộc nhất hành tinh, sôi ở 100°C và đông đặc ở 0°C.|THPT|Nước
+AgCl|⚪ 🧪 ☀️|Kết tủa trắng đặc trưng dùng nhận biết ion clorua, hóa đen ngoài ánh sáng.|THPT|Bạc clorua
+AgBr|🟡 🧪 📷|Kết tủa màu vàng nhạt tạo ra khi cho AgNO3 gặp dung dịch bromua.|THPT|Bạc bromua
+AgI|🟨 🧪 ☁️|Kết tủa màu vàng đậm đặc trưng dùng nhận biết ion iotua.|THPT|Bạc iotua
+Ag3PO4|🟨 🧪 🔬|Kết tủa màu vàng tươi tan trong axit, nhận biết ion photphat.|THPT|Bạc photphat
+Ag2S|⚫ 💍 🧪|Lớp kết tủa màu đen làm dây chuyền bạc bị xỉn màu khi gặp gió độc H2S.|THPT|Bạc sunfua
+CuS|⚫ 🧪 🛡️|Kết tủa màu đen bền vững, không tan ngay cả trong axit HCl mạnh.|THPT|Đồng(II) sunfua
+PbS|⚫ 🧪 🎨|Kết tủa màu đen giúp nhận biết khí H2S bằng giấy tẩm muối chì.|THPT|Chì(II) sunfua
+FeS|⚫ 🥚 🧪|Chất rắn màu đen phản ứng với HCl tạo khí trứng thối H2S trong phòng thí nghiệm.|THPT|Sắt(II) sunfua
+ZnS|⚪ ✨ 🧪|Kết tủa sunfua hiếm hoi có màu trắng và khả năng phát quang.|THPT|Kẽm sunfua
+BaCO3|⚪ 🧪 🫧|Kết tủa màu trắng tan nhanh kèm sủi bọt khí khi nhỏ axit HCl vào.|THPT|Bari cacbonat
+BaSO3|⚪ 🧪 💨|Kết tủa trắng tan trong axit HCl giải phóng khí mùi hắc SO2.|THPT|Bari sunfit
+BaCrO4|🟨 🧪 🔬|Kết tủa màu vàng tươi dùng nhận biết ion cromat trong phòng thí nghiệm.|THPT|Bari cromat
+CuSO4|🔵 💎 💧|Muối khan màu trắng, hút nước chuyển ngay sang màu xanh lam tuyệt đẹp.|THPT|Đồng(II) sunfat
+CuCl2|🟢 🔵 🔥|Muối đồng hòa tan tạo dung dịch xanh lục đậm và nhuộm ngọn lửa màu xanh.|THPT|Đồng(II) clorua
+Cu(NO3)2|🔵 🔥 💨|Muối đồng màu xanh khi nhiệt phân tạo oxit đen và khí màu nâu đỏ.|THPT|Đồng(II) nitrat
+FeCl3|🟡 🧪 🔬|Dung dịch muối màu vàng nâu có khả năng hòa tan được cả kim loại đồng.|THPT|Sắt(III) clorua
+FeCl2|🟢 🧪 🔬|Muối sắt(II) có màu lục nhạt, dễ bị khí clo oxy hóa lên hóa trị III.|THPT|Sắt(II) clorua
+Fe2(SO4)3|🟡 🧪 💧|Muối sunfat của sắt hóa trị III dùng làm chất keo tụ xử lý nước.|THPT|Sắt(III) sunfat
+AlCl3|⚪ 💨 🧪|Muối nhôm bốc khói trắng trong không khí ẩm, xúc tác phản ứng hữu cơ.|THPT|Nhôm clorua
+NaAlO2|💧 ⚖️ 🧪|Muối tan tạo thành khi hòa tan nhôm hoặc nhôm oxit trong dung dịch NaOH.|THPT|Natri aluminat
+Na2ZnO2|💧 ⚖️ 🧪|Muối tan tạo thành khi cho kim loại kẽm tan trong dung dịch xút dư.|THPT|Natri zincat
+K2Cr2O7|🟠 🍷 🚔|Muối màu da cam đổi sang xanh lục khi gặp cồn, dùng đo nồng độ cồn.|THPT|Kali đicromat
+K2CrO4|🟨 ⚖️ 🧪|Muối màu vàng chanh chuyển thành màu da cam khi thêm axit vào.|THPT|Kali cromat
+NH4Cl|⚪ 💨 🔥|Muối amoni thăng hoa khói trắng, dùng làm chất điện phân trong pin khô.|THPT|Amoni clorua
+(NH4)2CO3|⚪ 💨 👃|Muối amoni dễ phân hủy ở nhiệt độ thường sinh mùi khai amoniac.|THPT|Amoni cacbonat
+Na2SO4|⚪ ❄️ 🧪|Muối Glauber tinh thể ngậm nước dùng trong công nghiệp thủy tinh và giấy.|THPT|Natri sunfat
+Na2S|🟡 🥚 🧪|Muối sunfua tan trong nước cho môi trường kiềm mạnh, dùng thuộc da.|THPT|Natri sunfua
+Na3PO4|⚪ 🧼 🧪|Muối photphat tạo môi trường kiềm mạnh dùng làm mềm nước cứng.|THPT|Natri photphat
+NaNO3|⚪ 🌶️ 🧪|Diêm tiêu Chile - nguồn muối nitrat tự nhiên quý giá.|THPT|Natri nitrat
+K2CO3|⚪ 🪴 🧼|Muối có nhiều trong tro bếp thực vật, tạo môi trường kiềm.|THPT|Kali cacbonat
+CaOCl2|⚪ 🦠 🫧|Clorua vôi - muối hỗn tạp của canxi dùng sát trùng, tẩy trắng.|THPT|Canxi oxiclorua (Clorua vôi)
+BaCl2|⚪ 🧪 💧|Dung dịch thuốc thử kinh điển để nhận biết axit H2SO4 và muối sunfat.|THPT|Bari clorua
+Pb(NO3)2|⚪ 🔥 🧪|Muối chì tan tốt trong nước, tạo kết tủa vàng rực khi gặp KI.|THPT|Chì(II) nitrat
+PbI2|✨ 🟡 🧪|Kết tủa tạo hiệu ứng "cơn mưa vàng" lấp lánh đẹp mắt nhất phòng thí nghiệm.|THPT|Chì(II) iotua
+Ca(HCO3)2|🏔️ 💧 🪨|Muối gây tính cứng tạm thời của nước, phân hủy tạo thạch nhũ hang động.|THPT|Canxi hiđrocacbonat
+Mg(HCO3)2|💧 ♨️ ⚪|Muối gây ra lớp cặn trắng đóng dưới đáy ấm đun nước lâu ngày.|THPT|Magie hiđrocacbonat
+KHSO4|⚪ 🧪 🔴|Muối axit hoạt động mạnh gần như axit H2SO4 loãng, làm quỳ hóa đỏ.|THPT|Kali hiđrosunfat
+KSCN|🩸 🧪 🔬|Thuốc thử nhạy nhất tạo dung dịch đỏ máu khi gặp ion sắt(III).|THPT|Kali thioxianat
+CH4|🔥 🐄 💨|Ankan đơn giản nhất, thành phần chính của khí thiên nhiên và khí bùn ao.|THPT|Metan
+C2H6|⛽ 🔥 🧪|Ankan có 2 cacbon, thành phần quan trọng thứ hai trong khí thiên nhiên.|THPT|Etan
+C5H12|⛽ 🔬 🧪|Ankan có 5 cacbon với 3 đồng phân cấu tạo quen thuộc trong đề thi.|THPT|Pentan
+C6H14|⛽ 🧪 💧|Dung môi hữu cơ không phân cực Hexan dùng chiết tách dầu thực vật.|THPT|Hexan
+C8H18|⛽ 🚗 🏆|Isooctan - chuẩn chỉ số octan 100 đánh giá chất lượng chống kích nổ xăng.|THPT|Octan (Isooctan)
+C2H4|🍌 💨 🧪|Anken đơn giản nhất, làm mất màu nước brom và làm chín nhanh trái cây.|THPT|Etilen
+C3H6|🧪 🛍️ 🔬|Monome điều chế nhựa PP chịu nhiệt dùng làm hộp đựng thực phẩm.|THPT|Propilen (Propen)
+C4H6|🛞 🧪 🌿|Buta-1,3-đien - nguyên liệu chính tổng hợp cao su Buna công nghiệp.|THPT|Buta-1,3-đien
+C5H8|🌳 🛞 🧪|Isopren - mắt xích cấu tạo nên cao su thiên nhiên lấy từ cây cao su.|THPT|Isopren
+C2H2|🔥 🛠️ 🧪|Ankin đơn giản nhất, cháy tỏa nhiệt cực cao dùng hàn cắt kim loại.|THPT|Axetilen
+C3H4|🧪 💛 🔬|Propin - ankin có liên kết ba đầu mạch tạo kết tủa vàng với AgNO3/NH3.|THPT|Propin
+C4H4|🧪 🔗 🔬|Vinylaxetilen tạo ra khi đime hóa axetilen trong công nghiệp cao su.|THPT|Vinylaxetilen
+C6H6|⬡ 🧪 ⚠️|Hiđrocacbon thơm vòng 6 cạnh nổi tiếng, mùi thơm nhẹ nhưng gây ung thư.|THPT|Benzen
+C7H8|⬡ 🎨 🧪|Toluen - làm mất màu thuốc tím khi đun nóng, nguyên liệu làm thuốc nổ TNT.|THPT|Toluen
+C8H10|⬡ 🎨 💧|Xilen - dung môi pha sơn có 3 đồng phân vị trí ortho, meta, para.|THPT|Xilen / Etylbenzen
+C8H8|⬡ 📦 🧪|Styren - vừa có vòng benzen vừa có nhánh nối đôi làm mất màu brom.|THPT|Styren
+CH3Cl|❄️ 🧪 💨|Sản phẩm thế đầu tiên khi chiếu sáng hỗn hợp khí metan và clo.|THPT|Clorometan
+CH2Cl2|🧪 💧 ☕|Dung môi Điclorometan dùng tách caffeine ra khỏi hạt cà phê.|THPT|Điclorometan
+CCl4|🧪 🧯 💧|Chất lỏng nặng không cháy, không phân cực, từng dùng làm bình chữa cháy.|THPT|Cacbon tetraclorua
+CH3OH|☠️ 🍷 🔥|Cồn công nghiệp cực độc, uống nhầm có thể gây mù lòa và tử vong.|THPT|Metanol
+C2H4(OH)2|🚗 ❄️ 💧|Etilen glicol chất chống đông két nước ô tô, hòa tan Cu(OH)2 tạo màu xanh.|THPT|Etilen glicol
+C3H5(OH)3|🫧 🧴 💧|Ancol 3 chức Glixerol vị ngọt, sánh, hòa tan đồng(II) hiđroxit.|THPT|Glixerol
+C6H5CH2OH|🌸 🧴 🧪|Ancol thơm đơn giản nhất có mùi thơm dịu nhẹ, không phản ứng NaOH.|THPT|Ancol benzylic
+C6H3N3O7|🟡 💥 🧪|Axit picric - kết tủa vàng đậm có tính nổ tạo ra khi nitro hóa phenol.|THPT|Axit picric (2,4,6-trinitrophenol)
+CH3CHO|🪞 🧪 🍷|Anđehit axetic tham gia phản ứng tráng bạc, chất gây đỏ mặt khi uống rượu.|THPT|Anđehit axetic (Etanal)
+C6H5CHO|🌰 🪞 🧪|Anđehit thơm đơn giản nhất có mùi hương hạt hạnh nhân.|THPT|Benzanđehit
+CH3COCH3|💅 🧪 💧|Xeton đơn giản nhất, dung môi bay hơi cực nhanh không tráng bạc.|THPT|Axeton (Propanon)
+HCOOCH3|🧪 🍐 🪞|Este đơn giản nhất chỉ có 2 cacbon và có khả năng tham gia tráng bạc.|THPT|Metyl fomat
+CH3COOCH3|🧪 🎨 💧|Este thơm nhẹ có 3 cacbon, đồng phân với etyl fomat và axit propionic.|THPT|Metyl axetat
+CH3COOC2H5|🍐 🧪 💧|Este kinh điển điều chế từ giấm và cồn, có mùi thơm dễ chịu của lê táo.|THPT|Etyl axetat
+CH3COOC6H5|🧪 ⚖️ 🔬|Phenyl axetat - este của phenol phản ứng với NaOH theo tỷ lệ mol 1:2.|THPT|Phenyl axetat
+C57H110O6|🥩 🧼 🧪|Chất béo rắn Tristearin tạo từ glixerol và axit stearic.|THPT|Tristearin
+C57H104O6|🫒 💧 🧪|Chất béo lỏng Triolein làm mất màu nước brom nhờ 3 liên kết đôi.|THPT|Triolein
+C51H98O6|🌴 🧈 🧪|Chất béo no Tripalmitin có nhiều trong dầu cọ và mỡ động vật.|THPT|Tripalmitin
+C6H10O5|🍚 🌳 📄|Công thức một mắt xích của cả tinh bột lẫn xenlulozơ.|THPT|Mắt xích Tinh bột / Xenlulozơ
+C6H7N3O11|💥 🔫 📄|Xenlulozơ trinitrat - thành phần của thuốc súng không khói.|THPT|Xenlulozơ trinitrat
+CH3NH2|🐟 💨 🔵|Amin đơn giản nhất ở thể khí, có mùi khai tanh của cá.|THPT|Metylamin
+C2H5NH2|🐟 🧪 🔵|Etylamin ở thể khí, có tính bazơ mạnh hơn amoniac.|THPT|Etylamin
+C6H5NH2|🧪 ⚪ 🌈|Anilin chất lỏng không màu, tạo kết tủa trắng với nước brom, không đổi màu quỳ.|THPT|Anilin
+(CH3)2NH|🐟 🧪 🔵|Amin bậc hai đơn giản nhất có mùi tanh mạnh.|THPT|Đimetylamin
+(CH3)3N|🐟 👃 🔵|Trimetylamin - hợp chất chính tạo nên mùi tanh đặc trưng của cá biển.|THPT|Trimetylamin
+C2H5NO2|🧬 ⚪ 🧪|Amino axit đơn giản nhất Glyxin, không làm đổi màu giấy quỳ tím.|THPT|Glyxin (Gly)
+C3H7NO2|🧬 ⚪ 🔬|Amino axit thiên nhiên có 3 cacbon quen thuộc trong chương trình lớp 12.|THPT|Alanin (Ala)
+C5H11NO2|🧬 💪 🔬|Amino axit thiết yếu mạch nhánh có 5 cacbon trong đề thi THPT.|THPT|Valin (Val)
+C5H9NO4|🧬 🔴 🍜|Axit glutamic có 2 nhóm axit làm quỳ tím hóa đỏ, nguyên liệu làm mì chính.|THPT|Axit glutamic (Glu)
+C6H14N2O2|🧬 🔵 🥛|Lysin có 2 nhóm amin làm quỳ tím hóa xanh, giúp trẻ ăn ngon.|THPT|Lysin (Lys)
+C3H3N|🧶 🧪 🔬|Acrilonitrin - monome trùng hợp tạo ra tơ nitron (tơ olon) giữ ấm tốt.|THPT|Acrilonitrin
+C6H11NO|🧶 👕 🧪|Caprolactam - chất trùng hợp mở vòng tạo nên tơ Nilon-6 bền bỉ.|THPT|Caprolactam
+C6H16N2|🧶 🔗 🧪|Hexametylenđiamin đồng trùng ngưng với axit ađipic tạo tơ Nilon-6,6.|THPT|Hexametylenđiamin
+C6H10O4|🧶 🧪 🔗|Axit ađipic chứa 6 cacbon hai chức dùng tổng hợp tơ Nilon-6,6.|THPT|Axit ađipic
+C8H6O4|♻️ 🧴 🧶|Axit terephtalic kết hợp etilen glicol tạo nhựa chai PET và tơ lapsan.|THPT|Axit terephtalic
+C5H8O2|🪟 ✈️ 🧪|Metyl metacrylat trùng hợp thành thủy tinh hữu cơ Plexiglas không vỡ.|THPT|Metyl metacrylat
+PH3|👻 🔥 💨|Khí photphin tự bốc cháy trong không khí tạo hiện tượng "ma trơi" nghĩa địa.|THPT|Photphin
+SiH4|💨 🔥 💻|Khí Silan tự bốc cháy trong không khí, dùng phủ lớp silic siêu tinh khiết.|THPT|Silan
+AsH3|☠️ 🧄 💨|Khí Arsin mùi tỏi cực độc dùng trong phép thử Marsh tìm thạch tín.|THPT|Arsin
+CS2|🧪 🔥 💨|Cacbon đisunfua dung môi dễ cháy dùng hòa tan lưu huỳnh và làm tơ visco.|THPT|Cacbon đisunfua
+PCl5|🧪 💨 ⚪|Photpho pentaclorua bốc khói mạnh trong không khí ẩm.|THPT|Photpho pentaclorua
+NH4NO2|🧪 💨 🔥|Muối nhiệt phân nhẹ tạo khí nitơ tinh khiết trong phòng thí nghiệm.|THPT|Amoni nitrit
+`.trim();
+
+    // CHỦ ĐỀ 3: HÀNG TIÊU DÙNG, MỸ PHẨM & THỰC PHẨM (94 câu)
+    const RAW_TD = `
+NaCl|🧂 🍳 🌊|Gia vị mặn không thể thiếu trong mọi căn bếp gia đình.|TD|Muối ăn (Natri clorua)
+C12H22O11|🍬 ☕ 🎋|Đường ăn chiết xuất từ cây mía và củ cải đường.|TD|Đường Saccarozơ
+C6H12O6|🍯 🍎 🍓|Đường Fructose tạo vị ngọt sắc đậm nhất trong mật ong và trái cây chín.|TD|Đường Fructose (Đường quả)
+NaHCO3|🧁 🧽 🧊|Bột nở Baking soda đa năng: làm bánh xốp, tẩy vết bẩn và khử mùi tủ lạnh.|TD|Baking soda (Natri bicacbonat)
+CH3COOH|🥟 🥗 🍶|Dung dịch nồng độ 2-5% tạo nên chai giấm ăn quen thuộc trong bếp.|TD|Giấm ăn (Axit axetic)
+C5H8NO4Na|🍜 🥄 😋|Mì chính / Bột ngọt giúp tăng vị ngọt thịt umami cho món canh.|TD|Mononatri glutamat (Bột ngọt)
+NaClO|👕 ✨ 🫧|Thành phần chính trong nước Javel tẩy trắng quần áo và lau sàn khử trùng.|TD|Natri hipoclorit (Nước Javel)
+C6H8O7|🍋 🍊 🥤|Axit citric tạo vị chua gắt tự nhiên trong chanh, cam và nước giải khát.|TD|Axit citric
+C4H6O5|🍏 🍐 🍬|Axit malic tạo vị chua thanh mát đặc trưng trong quả táo xanh.|TD|Axit malic
+C4H6O6|🍇 🍷 🧁|Axit tartaric tự nhiên trong quả nho, dùng tạo vị chua cho kẹo và rượu vang.|TD|Axit tartaric
+C7H6O2|🥫 🛡️ 🍓|Axit benzoic chất bảo quản chống nấm mốc trong mứt, nước tương.|TD|Axit benzoic
+C7H5O2Na|🥤 🥫 🛡️|Natri benzoat chất bảo quản phổ biến ghi trên nhãn chai nước ngọt, tương ớt.|TD|Natri benzoat
+C6H8O2|🧀 🍞 🛡️|Axit sorbic chất bảo quản an toàn ngăn mốc cho phô mai và bánh mì.|TD|Axit sorbic
+C2H2O4|⭐ 🍋 🧽|Axit oxalic có nhiều trong quả khế chua, dùng tẩy vết gỉ sắt trên áo trắng.|TD|Axit oxalic
+C3H8O3|🧴 💧 🧼|Glycerin chất hút ẩm giúp da mềm mịn trong hầu hết kem dưỡng và xà phòng.|TD|Glycerin mỹ phẩm
+C3H6O|💅 🧴 💨|Dung dịch tẩy sơn móng tay bốc hơi mát lạnh cực nhanh.|TD|Axeton tẩy móng
+C18H35O2Na|🧼 🫧 🛁|Natri stearat - muối axit béo cấu tạo nên bánh xà phòng tắm rắn.|TD|Natri stearat (Xà phòng)
+C16H31O2Na|🧼 🌴 🫧|Natri panmitat chất làm sạch tạo bọt mịn trong xà phòng dầu cọ.|TD|Natri panmitat
+C12H25SO4Na|🧴 🫧 🚿|Hoạt chất SLS tạo bọt dày trong dầu gội, sữa rửa mặt và kem đánh răng.|TD|Natri lauryl sunfat (SLS)
+NaF|🪥 🦷 🛡️|Hoạt chất chống sâu răng giúp tái khoáng men răng trong kem đánh răng.|TD|Natri florua
+SnF2|🪥 🦷 ❄️|Thiếc(II) florua trong kem đánh răng chuyên giảm ê buốt và ngừa viêm nướu.|TD|Thiếc(II) florua
+Na2CO3|🧺 🫧 👕|Bột soda giặt tẩy giúp làm mềm nước cứng và đánh bay dầu mỡ bám nồi.|TD|Soda giặt tẩy (Natri cacbonat)
+KAl(SO4)2|💧 💎 🦶|Phèn chua giúp đánh trong nước đục sinh hoạt và khử mùi cơ thể.|TD|Phèn chua (Nhôm kali sunfat)
+C7H14O2|🍌 🍨 👃|Isoamyl axetat tạo mùi thơm dầu chuối chín trong chè và bánh kẹo.|TD|Isoamyl axetat (Hương chuối)
+C6H12O2|🍍 🍹 👃|Etyl butirat tạo mùi thơm ngọt ngào của quả dứa chín.|TD|Etyl butirat (Hương dứa)
+C9H10O2|🌼 🌸 🧴|Benzyl axetat mang hương thơm quyến rũ của hoa nhài trong nước hoa.|TD|Benzyl axetat (Hương nhài)
+C10H12O2|🌿 🦷 👃|Eugenol - tinh dầu thơm ấm nồng đặc trưng của nụ đinh hương.|TD|Eugenol (Tinh dầu đinh hương)
+C8H8O3|🍦 🧁 🌸|Vanillin - hoạt chất tạo hương vani thơm béo trong kem và bánh ngọt.|TD|Vanillin (Hương Vani)
+C9H8O|🪵 ☕ 👃|Cinnamalđehit tạo mùi thơm ấm cay nồng nàn của thanh vỏ quế.|TD|Cinnamalđehit (Tinh dầu quế)
+C10H18O|🌿 💚 🧴|Eucalyptol - thành phần chính tạo mùi thơm mát của dầu gió xanh khuynh diệp.|TD|Eucalyptol (1,8-Cineole)
+C10H16|🍊 🍋 🧴|Limonene - tinh dầu thơm sảng khoái trong vỏ cam, chanh và bưởi.|TD|Limonene
+C10H14O|🌿 👄 🫧|Thymol tinh dầu cỏ xạ hương giúp diệt khuẩn trong nước súc miệng.|TD|Thymol
+C18H27NO3|🌶️ 🔥 🥵|Capsaicin - hoạt chất tạo vị cay xé lưỡi của quả ớt tươi.|TD|Capsaicin
+C17H19NO3|⚫ 🌶️ 🍲|Piperine - hợp chất tạo vị cay thơm đặc trưng của hạt tiêu đen.|TD|Piperine
+C6H10OS2|🧄 🔪 👃|Allicin - hợp chất lưu huỳnh tạo mùi thơm hăng mạnh khi đập dập củ tỏi.|TD|Allicin
+C3H6OS|🧅 🔪 😭|Hợp chất lưu huỳnh dễ bay hơi từ hành tây cắt lát làm cay xè chảy nước mắt.|TD|Propanethial S-oxide
+C4H5NS|🍣 🟢 🥵|Allyl isothiocyanat tạo vị cay xộc thẳng lên mũi của mù tạt xanh Wasabi.|TD|Allyl isothiocyanat (Wasabi)
+C10H12O|⭐ 🍜 🌿|Anethole tạo hương thơm ngọt nồng quyến rũ của hoa hồi nấu phở.|TD|Anethole (Tinh dầu hồi)
+C17H26O4|🫚 ☕ 🔥|Gingerol - chất tạo vị cay ấm nồng trong củ gừng tươi.|TD|Gingerol
+C40H56|🥕 🍅 🟠|Beta-carotene - sắc tố màu cam đỏ rực rỡ trong cà rốt, tiền chất Vitamin A.|TD|Beta-carotene
+C40H56O2|🥚 🥬 👁️|Lutein - sắc tố vàng trong lòng đỏ trứng và rau xanh giúp sáng mắt.|TD|Lutein
+C55H72MgN4O5|🍃 ☀️ 💚|Chất diệp lục a tạo màu xanh mượt cho lá cây và thực hiện quang hợp.|TD|Diệp lục a (Chlorophyll a)
+C7H8N4O2|🍫 🤎 😊|Theobromine - chất tạo vị đắng nhẹ và cảm giác vui vẻ trong sô-cô-la.|TD|Theobromine
+C7H14N2O3|🍵 🍃 😌|L-Theanine - axit amin giúp đầu óc thư thái tỉnh táo trong lá trà xanh.|TD|L-Theanine
+C15H14O6|🍵 🛡️ ✨|Catechin - chất chống oxy hóa dồi dào nổi tiếng trong nước trà xanh.|TD|Catechin
+C14H18N2O5|🥤 0️⃣ 🍬|Aspartame - chất tạo ngọt nhân tạo phổ biến trong nước ngọt ăn kiêng.|TD|Aspartame
+C7H5NO3S|🍬 🧪 ⚡|Saccharin - đường hóa học có độ ngọt gấp khoảng 300 lần đường mía.|TD|Saccharin
+C12H19Cl3O8|🧁 0️⃣ 🍬|Sucralose - chất tạo ngọt không calo chịu nhiệt dùng cho người ăn kiêng.|TD|Sucralose
+C4H6O2|🍿 🧈 🎬|Diacetyl - hợp chất tạo mùi thơm ngậy của bơ trong bắp rang bơ rạp phim.|TD|Diacetyl (Hương bơ)
+C10H20O2|🍊 🍹 👃|Octyl axetat tạo mùi thơm dịu nhẹ đặc trưng của trái cam chín.|TD|Octyl axetat
+C12H20O2|💜 🌸 🧴|Linalyl axetat - thành phần tạo hương thơm thư giãn của tinh dầu oải hương.|TD|Linalyl axetat (Oải hương)
+C7H6O|🌰 🧁 👃|Benzanđehit tự nhiên tạo hương hạnh nhân béo thơm cho bánh ngọt.|TD|Hương hạnh nhân
+C4H10|🔥 🚬 ⛽|Khí Butan hóa lỏng nhìn thấy bên trong chiếc bật lửa nhựa dùng một lần.|TD|Khí Butan bật lửa
+C3H8|🔥 🍳 ⛽|Khí Propan nén áp suất cao trong bình gas đun nấu gia đình.|TD|Khí Propan (Gas bếp)
+C10H8|⚪ 👕 🪳|Viên băng phiến màu trắng đặt trong tủ quần áo để đuổi gián và ẩm mốc.|TD|Naphthalen (Băng phiến)
+SiO2|📦 👟 💧|Hạt Silica gel trong suốt đựng trong gói nhỏ hút ẩm bánh kẹo, giày dép.|TD|Silica gel hút ẩm
+ZnO|☀️ 🧴 👶|Kẽm oxit thành phần chống nắng vật lý phổ rộng và kem trị hăm tã em bé.|TD|Kẽm oxit mỹ phẩm
+C6H6N2O|🧴 ✨ 💧|Hoạt chất Niacinamide quốc dân giúp dưỡng sáng da và kiềm dầu trong serum.|TD|Niacinamide (Vitamin B3)
+C20H30O|🧴 ⏳ ✨|Retinol - hoạt chất chống lão hóa, giảm nếp nhăn hàng đầu ngành mỹ phẩm.|TD|Retinol (Vitamin A)
+C6H6O4|🍚 🧴 ✨|Axit kojic từ quá trình lên men gạo giúp dưỡng trắng và mờ đốm nâu.|TD|Axit kojic
+C12H16O7|🫐 🧴 ✨|Arbutin chiết xuất từ dâu gấu giúp làm sáng da an toàn trong kem dưỡng.|TD|Arbutin
+C9H19NO4|🧴 💧 🛡️|Panthenol (Pro-Vitamin B5) phục hồi da tổn thương và dưỡng tóc mềm mượt.|TD|Panthenol (Vitamin B5)
+C4H6N4O3|🌿 🧴 😌|Allantoin giúp làm dịu kích ứng và cấp ẩm cho da nhạy cảm.|TD|Allantoin
+C2H4O3|🎋 🧴 ✨|Axit glycolic (AHA) chiết từ mía đường dùng tẩy tế bào chết hóa học.|TD|Axit glycolic (AHA)
+C3H8O2|🧴 💧 🔬|Propylene glycol dung môi giữ ẩm quen thuộc trên bảng thành phần mỹ phẩm.|TD|Propylene glycol
+C4H10O2|🧴 💧 ✨|Butylene glycol chất cấp ẩm thấm nhanh, không nhờn rít trong nước hoa hồng.|TD|Butylene glycol
+C16H34O|🥥 🧴 💇|Cetyl alcohol - cồn béo lành tính làm mềm mượt kem xả tóc và kem dưỡng.|TD|Cetyl alcohol
+C18H38O|🧴 🧈 💧|Stearyl alcohol - cồn béo giúp tạo độ đặc mịn cho sữa dưỡng thể.|TD|Stearyl alcohol
+C30H62|🫒 🧴 ✨|Squalane - dầu dưỡng ẩm siêu nhẹ, thấm nhanh và không gây bít tắc lỗ chân lông.|TD|Squalane
+Na2B4O7|🍖 ⚠️ 🚫|Hàn the - hóa chất bị cấm dùng để tạo độ giòn dai cho giò chả, bún phở.|TD|Hàn the (Borax)
+NaNO2|🌭 🥓 🔴|Natri nitrit giữ màu hồng tươi hấp dẫn và chống vi khuẩn cho xúc xích.|TD|Natri nitrit thực phẩm
+Na2SO3|🎋 ⚪ 🍎|Natri sunfit giúp chống thâm nâu và bảo quản trái cây sấy, măng khô.|TD|Natri sunfit
+KBrO3|🍞 ⚠️ 🚫|Kali bromat từng dùng kích nở trắng bột mì nhưng bị cấm vì nguy cơ gây ung thư.|TD|Kali bromat
+Ca(OH)2|🥥 🍬 💧|Nước vôi trong dùng ngâm bí đao, cùi dừa để làm mứt Tết giòn ngon.|TD|Nước vôi trong ẩm thực
+NH4HCO3|🥖 🥟 💨|Bột khai giúp bánh quẩy nóng và bánh bao nở phồng giòn xốp.|TD|Amoni bicacbonat (Bột khai)
+KHC4H4O6|🥚 🍰 🧁|Bột Cream of Tartar giúp đánh bông cứng lòng trắng trứng làm bánh bông lan.|TD|Kali bitartrat (Cream of Tartar)
+CaSO4|🧈 🥣 ⚪|Thạch cao phi thực phẩm làm đông kết sữa đậu nành thành đậu phụ truyền thống.|TD|Thạch cao làm đậu phụ
+MgCl2|🇯🇵 🧈 🌊|Muối biển Nigari truyền thống của Nhật Bản dùng làm đông đậu phụ mềm.|TD|Magie clorua (Muối Nigari)
+C6H10O6|🍮 🥣 🍬|Đường nho GDL làm đông tàu hũ nước đường mềm tan trong miệng.|TD|Glucono delta-lactone (Đường nho)
+H3PO4|🥤 🫧 🟤|Axit tạo vị chua thanh đặc trưng trong các loại nước ngọt có ga màu đen.|TD|Axit photphoric thực phẩm
+CO2|🥤 🫧 ❄️|Khí được nén áp suất cao tạo bọt sủi mát lạnh trong bia và nước ngọt có ga.|TD|Khí ga thực phẩm
+C3H6O2|🍞 🛡️ 🦠|Axit propionic chất chống mốc phổ biến trong bánh mì gối đóng gói.|TD|Axit propionic thực phẩm
+C2H5OH|🍺 🍷 🥂|Thành phần cồn lên men từ ngũ cốc và nho tạo nên bia, rượu vang.|TD|Cồn thực phẩm (Etanol)
+H2O2|🦷 ✨ 💇|Oxy già nồng độ thích hợp dùng trong miếng dán trắng răng và oxy trợ nhuộm tóc.|TD|Oxy trợ nhuộm / trắng răng
+NH3|💇‍♀️ 🎨 👃|Chất tạo mùi khai hắc khi mở lớp biểu bì tóc trong thuốc nhuộm vĩnh viễn.|TD|Amoniac nhuộm tóc
+C6H8N2|💇‍♂️ ⚫ 🎨|Hoạt chất PPD giúp thuốc nhuộm tóc lên màu đen bền chắc.|TD|p-Phenylenđiamin (PPD)
+C20H22O3|☀️ 🧴 🛡️|Avobenzone - màng lọc chống nắng hóa học hấp thụ tia UVA hàng đầu.|TD|Avobenzone
+AlCl3|🧴 💪 💧|Nhôm clorua hoạt chất ngăn tiết mồ hôi trong các loại lăn khử mùi.|TD|Nhôm clorua khử mùi
+CaCO3|🪥 🦷 ⚪|Bột đá phấn siêu mịn giúp đánh bay mảng bám trong kem đánh răng.|TD|Canxi cacbonat kem đánh răng
+C4H8O2|💅 🍐 🧴|Etyl axetat dùng làm nước rửa móng tay dịu nhẹ không chứa axeton.|TD|Etyl axetat rửa móng
+C18H34O2|🫒 🥗 ❤️|Axit oleic - chất béo không bão hòa đơn quý giá nhất trong dầu ô-liu.|TD|Axit oleic (Omega-9)
+C18H32O2|🌻 🍳 💧|Axit linoleic (Omega-6) dồi dào trong dầu hướng dương và dầu đậu nành.|TD|Axit linoleic (Omega-6)
+C18H30O2|🌰 🥗 ❤️|Axit alpha-linolenic (Omega-3 thực vật) giàu có trong hạt chia và óc chó.|TD|ALA (Omega-3 thực vật)
+C22H32O2|🐟 🧠 👶|Axit béo DHA trong dầu cá biển giúp phát triển trí não và thị giác.|TD|DHA (Omega-3)
+C20H30O2|🐟 ❤️ 💊|Axit béo EPA trong dầu cá giúp giảm mỡ máu và bảo vệ tim mạch.|TD|EPA (Omega-3)
+C4H10O4|🍬 0️⃣ 🦷|Đường ăn kiêng Erythritol hầu như không calo và không gây tăng đường huyết.|TD|Erythritol
+`.trim();
+
+    // CHỦ ĐỀ 4: NGUYÊN TỐ HÓA HỌC - BẢNG TUẦN HOÀN (109 câu)
+    const RAW_NT = `
+H|🚀 ☀️ 🎈|Nguyên tố nhẹ nhất và phổ biến nhất vũ trụ, dùng làm nhiên liệu tên lửa.|NT|Hydro (Hydrogen)
+He|🎈 🗣️ ☁️|Khí hiếm nhẹ bơm bóng bay lơ lửng và làm giọng nói trở nên the thé.|NT|Heli (Helium)
+Li|📱 🔋 🚗|Kim loại nhẹ nhất bảng tuần hoàn, trái tim của pin điện thoại và xe điện.|NT|Liti (Lithium)
+Be|💚 💎 🛰️|Kim loại nhẹ tạo nên sắc xanh tuyệt đẹp của viên đá quý ngọc lục bảo.|NT|Beri (Beryllium)
+B|🧪 🔥 🍲|Á kim giúp chế tạo thủy tinh chịu sốc nhiệt Borosilicate cho phòng thí nghiệm.|NT|Bo (Boron)
+C|💎 ✏️ 🧬|Nguyên tố kỳ diệu tạo nên cả kim cương cứng nhất lẫn ruột bút chì mềm.|NT|Cacbon (Carbon)
+N|🌬️ ❄️ 🌱|Khí chiếm tới 78% thể tích bầu khí quyển Trái Đất.|NT|Nitơ (Nitrogen)
+O|🫁 🔥 🌍|Nguyên tố duy trì sự sống và sự cháy, chiếm khoảng 21% không khí.|NT|Oxy (Oxygen)
+F|🦷 ⚡ ☠️|Phi kim có độ âm điện lớn nhất và hoạt động hóa học mạnh nhất.|NT|Flo (Fluorine)
+Ne|🌆 🔴 💡|Khí hiếm phát ánh sáng đỏ cam rực rỡ trong các bảng hiệu đèn ống ban đêm.|NT|Neon
+Na|🧂 🔪 💥|Kim loại kiềm mềm cắt được bằng dao, phản ứng bốc cháy nổ khi thả vào nước.|NT|Natri (Sodium)
+Mg|🎆 ✨ 🍃|Kim loại cháy sáng chói lòa trong pháo sáng và nằm giữa phân tử diệp lục.|NT|Magie (Magnesium)
+Al|✈️ 🥫 🪜|Kim loại phổ biến nhất vỏ Trái Đất, nhẹ bền dùng làm vỏ máy bay và lon nước.|NT|Nhôm (Aluminium)
+Si|💻 ☀️ 🏖️|Nguyên tố bán dẫn cốt lõi chế tạo chip máy tính và tấm pin mặt trời.|NT|Silic (Silicon)
+P|🔥 🦴 🧬|Phi kim có trên bao que diêm và là thành phần cấu tạo xương răng, ADN.|NT|Photpho (Phosphorus)
+S|🌋 💛 🥚|Phi kim màu vàng chanh tập trung nhiều quanh các miệng núi lửa.|NT|Lưu huỳnh (Sulfur)
+Cl|🏊 🦠 💨|Khí màu vàng lục mùi hắc dùng khử trùng nước sinh hoạt và bể bơi.|NT|Clo (Chlorine)
+Ar|💡 🌬️ 🛡️|Khí hiếm chiếm gần 1% không khí, bơm vào bóng đèn sợi đốt chống cháy dây tóc.|NT|Argon
+K|🍌 💓 💥|Kim loại kiềm dồi dào trong quả chuối, thiết yếu cho nhịp đập trái tim.|NT|Kali (Potassium)
+Ca|🦴 🥛 🐚|Kim loại kiềm thổ tạo nên độ chắc khỏe của bộ xương, răng và vỏ sò ốc.|NT|Canxi (Calcium)
+Sc|🚲 ⚾ ✈️|Kim loại nhẹ pha hợp kim nhôm làm khung xe đạp và gậy bóng chày siêu bền.|NT|Scandi (Scandium)
+Ti|🚀 🦴 ⌚|Kim loại siêu nhẹ, siêu bền, chống gỉ tuyệt đối dùng làm khớp giả và tàu vũ trụ.|NT|Titan (Titanium)
+V|🔧 ⚙️ 🚗|Kim loại pha vào thép giúp cờ-lê và lò xo ô tô siêu cứng, không gãy.|NT|Vanadi (Vanadium)
+Cr|🛡️ ✨ 🚗|Kim loại cứng nhất, dùng mạ sáng bóng như gương và làm thép không gỉ.|NT|Crom (Chromium)
+Mn|🚂 🛤️ 🔋|Kim loại không thể thiếu để luyện thép chịu mài mòn làm đường ray tàu hỏa.|NT|Mangan (Manganese)
+Fe|🏗️ 🧲 🩸|Kim loại quan trọng nhất lịch sử nhân loại, có trong hồng cầu mang oxy.|NT|Sắt (Iron)
+Co|🔵 🏺 🔋|Kim loại tạo màu xanh lam đặc trưng cho gốm sứ cổ và cực pin hiện đại.|NT|Coban (Cobalt)
+Ni|🪙 🍴 🛡️|Kim loại trắng bạc bền bỉ dùng đúc tiền xu và chế tạo thép Inox.|NT|Niken (Nickel)
+Cu|🔌 🪙 🗽|Kim loại màu đỏ nâu dẫn điện cực tốt làm lõi dây điện và tượng Nữ thần Tự do.|NT|Đồng (Copper)
+Zn|🏠 🔋 🛡️|Kim loại dùng mạ tôn chống gỉ sét và chế tạo vỏ pin khô.|NT|Kẽm (Zinc)
+Ga|✋ 💧 📱|Kim loại độc đáo có thể tan chảy thành lỏng ngay trong lòng bàn tay ấm 30°C.|NT|Gali (Gallium)
+Ge|🔭 📷 💻|Á kim bán dẫn dùng chế tạo ống kính tầm nhiệt hồng ngoại và cáp quang.|NT|Gemani (Germanium)
+As|☠️ 🕵️ 🧪|Á kim khét tiếng trong lịch sử với tên gọi chất độc thạch tín.|NT|Asen (Arsenic)
+Se|🖨️ 🧴 ☀️|Phi kim quang dẫn dùng trong trống máy photocopy và dầu gội trị gàu.|NT|Selen (Selenium)
+Br|🧪 🟤 💧|Phi kim duy nhất ở trạng thái lỏng màu đỏ nâu ở nhiệt độ phòng.|NT|Brom (Bromine)
+Kr|📸 ⚡ 🦸|Khí hiếm dùng trong đèn flash máy ảnh siêu tốc, trùng tên quê hương Siêu Nhân.|NT|Krypton
+Rb|🟣 ⏱️ 🎆|Kim loại kiềm cho ngọn lửa đỏ tím, ứng dụng trong đồng hồ nguyên tử.|NT|Rubidi (Rubidium)
+Sr|🎆 ❤️ ✨|Kim loại tạo ra sắc đỏ rực rỡ bậc nhất trên bầu trời pháo hoa đêm giao thừa.|NT|Stronti (Strontium)
+Y|📺 🔴 🔦|Kim loại đất hiếm tạo tia laser YAG y tế và chất phát quang màn hình.|NT|Ytri (Yttrium)
+Zr|💍 🦷 🚀|Kim loại tạo đá giả kim cương lấp lánh và làm mão răng sứ siêu bền.|NT|Zirconi (Zirconium)
+Nb|🧲 🏥 🚀|Kim loại siêu dẫn chế tạo nam châm khổng lồ trong máy chụp MRI.|NT|Niobi (Niobium)
+Mo|🔥 ⚙️ 🛡️|Kim loại chịu nhiệt cực cao gia cường thép làm nòng súng và tuabin.|NT|Molipden (Molybdenum)
+Tc|☢️ 🏥 🔬|Nguyên tố nhân tạo đầu tiên trên Trái Đất, dùng chụp xạ hình y học hạt nhân.|NT|Tecneti (Technetium)
+Ru|💾 🔌 💎|Kim loại quý nhóm bạch kim phủ lên đĩa cứng tăng mật độ lưu trữ dữ liệu.|NT|Ruteni (Ruthenium)
+Rh|💍 🚗 💰|Kim loại quý đắt đỏ hàng đầu thế giới, mạ sáng bóng lên trang sức vàng trắng.|NT|Rođi (Rhodium)
+Pd|🚗 💨 💎|Kim loại quý bên trong bộ lọc khí thải ô tô biến khí độc thành vô hại.|NT|Palađi (Palladium)
+Ag|💍 ⚡ 🪞|Kim loại dẫn điện và dẫn nhiệt tốt nhất trong tất cả các kim loại.|NT|Bạc (Silver)
+Cd|🔋 🎨 ⚠️|Kim loại nặng từng dùng làm pin sạc Ni-Cd và bột màu vàng nghệ thuật.|NT|Cađimi (Cadmium)
+In|📱 👆 📺|Kim loại mềm tạo lớp màng dẫn điện trong suốt trên màn hình cảm ứng điện thoại.|NT|Inđi (Indium)
+Sb|🔥 🛡️ 🔋|Á kim dùng làm chất chống cháy cho vải và làm cứng bản cực ắc quy.|NT|Antimon (Antimony)
+Te|☀️ 💿 🔬|Á kim dùng chế tạo tấm pin năng lượng mặt trời mỏng hiệu suất cao.|NT|Telu (Tellurium)
+I|🧂 🦋 🟣|Nguyên tố bắt buộc bổ sung vào muối ăn để phòng chống bệnh bướu cổ.|NT|Iốt (Iodine)
+Xe|🚘 💡 🚀|Khí hiếm tạo ánh sáng trắng xanh siêu mạnh trong đèn pha ô tô và động cơ ion.|NT|Xenon
+Cs|⏱️ 🛰️ 💥|Kim loại kiềm dùng định nghĩa chính xác 1 giây quốc tế trong đồng hồ nguyên tử.|NT|Xesi (Cesium)
+Ba|🎆 💚 🩻|Kim loại kiềm thổ tạo màu xanh lục rực rỡ cho những chùm pháo hoa.|NT|Bari (Barium)
+La|📷 🔭 🔋|Đất hiếm tăng chiết suất thấu kính máy ảnh đắt tiền và pin xe lai Hybrid.|NT|Lantan (Lanthanum)
+Ce|🔥 ✨ 🚬|Kim loại đất hiếm tạo ra tia lửa sáng khi quẹt viên đá trong bật lửa.|NT|Xeri (Cerium)
+Pr|🥽 🔥 🟡|Đất hiếm pha vào kính bảo hộ thợ thổi thủy tinh và thợ hàn lọc ánh sáng chói.|NT|Praseođim (Praseodymium)
+Nd|🧲 🎧 🔊|Đất hiếm chế tạo nam châm vĩnh cửu mạnh nhất thế giới trong tai nghe, loa.|NT|Neođim (Neodymium)
+Pm|☢️ ⌚ 💚|Nguyên tố đất hiếm phóng xạ từng dùng làm sơn dạ quang mặt đồng hồ.|NT|Prometi (Promethium)
+Sm|🧲 ✈️ 🔥|Đất hiếm làm nam châm siêu bền chịu được nhiệt độ cực cao.|NT|Samari (Samarium)
+Eu|💶 🔴 ✨|Đất hiếm phát quang đỏ dưới đèn cực tím dùng chống tiền giả trên tờ Euro.|NT|Europi (Europium)
+Gd|🏥 🧲 🧠|Đất hiếm làm thuốc tương phản giúp hình ảnh chụp cộng hưởng từ MRI rõ nét.|NT|Gađolini (Gadolinium)
+Tb|💡 💚 📱|Đất hiếm phát ánh sáng xanh lục tinh khiết trong đèn huỳnh quang và màn hình.|NT|Tebi (Terbium)
+Dy|🚗 🧲 🔥|Đất hiếm giúp nam châm động cơ xe điện không bị mất từ tính khi chạy nóng.|NT|Đisprosi (Dysprosium)
+Ho|🧲 🔦 🏥|Nguyên tố có từ tính mạnh nhất tự nhiên, dùng trong laser tán sỏi thận.|NT|Honmi (Holmium)
+Er|🌐 💡 🌊|Đất hiếm khuếch đại tín hiệu ánh sáng trong tuyến cáp quang ngầm dưới đáy biển.|NT|Ebi (Erbium)
+Tm|🩻 💼 🔦|Đất hiếm dùng làm nguồn phát cho máy chụp X-quang di động cỡ nhỏ.|NT|Tuli (Thulium)
+Yb|⏱️ 🔦 🔬|Đất hiếm chế tạo đồng hồ quang học chính xác hàng đầu hành tinh.|NT|Ytecbi (Ytterbium)
+Lu|🏥 🔬 💰|Đất hiếm đắt đỏ dùng trong máy quét PET phát hiện sớm tế bào ung thư.|NT|Luteti (Lutetium)
+Hf|⚓ ☢️ 💻|Kim loại làm thanh điều khiển lò phản ứng hạt nhân trên tàu ngầm.|NT|Hafni (Hafnium)
+Ta|📱 ⚡ 🦴|Kim loại siêu chống ăn mòn làm tụ điện tí hon bên trong mọi smartphone.|NT|Tantan (Tantalum)
+W|💡 🔥 🏆|Kim loại có nhiệt độ nóng chảy cao nhất (3422°C), làm dây tóc bóng đèn.|NT|Vonfram (Tungsten)
+Re|✈️ 🔥 🚀|Kim loại cực hiếm chịu nhiệt siêu hạng làm cánh tuabin động cơ phản lực.|NT|Reni (Rhenium)
+Os|⚖️ ✒️ 💎|Kim loại có khối lượng riêng nặng và đặc nhất Trái Đất, làm đầu ngòi bút máy.|NT|Osimi (Osmium)
+Ir|🦕 ☄️ 🛡️|Kim loại siêu chống ăn mòn, có lớp bụi phủ toàn cầu ghi dấu thiên thạch diệt khủng long.|NT|Iriđi (Iridium)
+Pt|💍 👑 🚗|Kim loại quý màu trắng bạc sang trọng bậc nhất, làm nhẫn cưới và xúc tác.|NT|Bạch kim (Platinum)
+Au|👑 💍 🪙|Kim loại quý màu vàng rực không bao giờ bị gỉ sét, biểu tượng của sự giàu sang.|NT|Vàng (Gold)
+Hg|🌡️ 💧 ☠️|Kim loại duy nhất tồn tại ở thể lỏng ở nhiệt độ thường, từng dùng trong nhiệt kế.|NT|Thủy ngân (Mercury)
+Tl|☠️ 🕵️ 🧪|Kim loại nặng không màu không mùi cực độc từng mệnh danh "thuốc độc kẻ đầu độc".|NT|Tali (Thallium)
+Pb|🔋 🩻 🛡️|Kim loại nặng, mềm dùng làm tấm chắn tia X-quang và bản cực bình ắc quy.|NT|Chì (Lead)
+Bi|🌈 💎 🤢|Kim loại nặng kết tinh thành khối bậc thang màu cầu vồng lộng lẫy.|NT|Bitmut (Bismuth)
+Po|☢️ ☠️ 🇵🇱|Nguyên tố phóng xạ cực độc do Marie Curie đặt tên theo quê hương Ba Lan.|NT|Poloni (Polonium)
+At|☢️ 💎 ❓|Nguyên tố phóng xạ hiếm nhất trong tự nhiên trên lớp vỏ Trái Đất.|NT|Astatin (Astatine)
+Rn|☢️ 🏠 💨|Khí hiếm phóng xạ không màu có thể rò rỉ tích tụ nguy hiểm dưới tầng hầm.|NT|Radon
+Fr|☢️ 💥 🇫🇷|Kim loại kiềm phóng xạ cực hiếm và kém bền bậc nhất bảng tuần hoàn.|NT|Franxi (Francium)
+Ra|☢️ 💚 ⌚|Nguyên tố phóng xạ tự phát sáng xanh trong bóng tối do vợ chồng Curie phát hiện.|NT|Rađi (Radium)
+Ac|☢️ 💙 🔬|Nguyên tố phóng xạ đứng đầu họ Actini, phát ánh sáng xanh mờ trong tối.|NT|Actini (Actinium)
+Th|⚡ 🔨 ☢️|Kim loại phóng xạ mang tên thần Sấm Thor, tiềm năng năng lượng hạt nhân sạch.|NT|Thori (Thorium)
+U|☢️ ⚡ 🏭|Nhiên liệu hạt nhân chủ lực vận hành các nhà máy điện nguyên tử.|NT|Urani (Uranium)
+Np|🔱 ☢️ 🪐|Nguyên tố siêu urani đầu tiên, đặt tên theo hành tinh sao Hải Vương.|NT|Neptuni (Neptunium)
+Pu|🚀 ☢️ 🔋|Nguồn nhiên liệu hạt nhân cung cấp điện cho tàu thăm dò sao Hỏa và Voyager.|NT|Plutoni (Plutonium)
+Am|🚨 🔥 ☢️|Nguyên tố phóng xạ lượng siêu nhỏ nằm trong đầu báo khói báo cháy gia đình.|NT|Americi (Americium)
+Cm|🚀 🪐 ☢️|Nguyên tố vinh danh gia đình Curie, dùng phân tích thành phần đất đá sao Hỏa.|NT|Curi (Curium)
+Bk|🏫 ☢️ 🔬|Nguyên tố tổng hợp tại Đại học Berkeley dùng chế tạo nguyên tố siêu nặng.|NT|Beckeli (Berkelium)
+Cf|💰 ☢️ 🏭|Nguyên tố siêu đắt giá dùng làm nguồn phát neutron khởi động lò phản ứng.|NT|Califoni (Californium)
+Es|👨‍🔬 🧠 ☢️|Nguyên tố phóng xạ tổng hợp đặt tên vinh danh thiên tài Albert Einstein.|NT|Ensteni (Einsteinium)
+Fm|☢️ ⚛️ 🇮🇹|Nguyên tố đặt tên vinh danh cha đẻ lò phản ứng hạt nhân Enrico Fermi.|NT|Fecmi (Fermium)
+Md|📊 🧪 🇷🇺|Nguyên tố vinh danh nhà hóa học Dmitri Mendeleev - cha đẻ Bảng tuần hoàn.|NT|Menđelevi (Mendelevium)
+No|🏅 💥 🇸🇪|Nguyên tố đặt tên vinh danh Alfred Nobel - người sáng lập giải thưởng Nobel.|NT|Nobeli (Nobelium)
+Lr|⚛️ 🌀 ☢️|Nguyên tố cuối cùng họ Actini, vinh danh người phát minh máy gia tốc hạt.|NT|Lorenxi (Lawrencium)
+Rf|⚛️ 🔬 🇳🇿|Nguyên tố siêu nặng số 104 vinh danh nhà vật lý Ernest Rutherford.|NT|Rơdơfođi (Rutherfordium)
+Sg|👨‍🔬 ⚛️ 🇺🇸|Nguyên tố đầu tiên từng được đặt theo tên một nhà khoa học khi ông còn sống.|NT|Siboogi (Seaborgium)
+Bh|⚛️ 🇩🇰 🔬|Nguyên tố siêu nặng vinh danh nhà vật lý lượng tử vĩ đại Niels Bohr.|NT|Bori (Bohrium)
+Mt|👩‍🔬 ⚛️ 🇦🇹|Nguyên tố vinh danh nữ nhà vật lý hạt nhân xuất sắc Lise Meitner.|NT|Meitneri (Meitnerium)
+Rg|🩻 🦴 🇩🇪|Nguyên tố số 111 đặt theo tên Wilhelm Röntgen - người tìm ra tia X.|NT|Rơngeni (Roentgenium)
+Cn|☀️ 🪐 🇵🇱|Nguyên tố số 112 đặt theo nhà thiên văn học Nicolaus Copernicus.|NT|Copernixi (Copernicium)
+Nh|🇯🇵 🌸 ⚛️|Nguyên tố đầu tiên được phát hiện tại châu Á bởi các nhà khoa học Nhật Bản.|NT|Nihoni (Nihonium)
+Og|🏁 1️⃣ ⚛️|Nguyên tố nặng nhất, đứng ở ô số 118 cuối cùng của Bảng tuần hoàn hiện đại.|NT|Oganesson
+`.trim();
+
+    // CHỦ ĐỀ 5: CÔNG NGHIỆP, NÔNG NGHIỆP, KHOÁNG VẬT & MÔI TRƯỜNG (108 câu)
+    const RAW_CN = `
+CO(NH2)2|🌾 🌱 🚜|Phân đạm Urê có hàm lượng nitơ cao nhất (46%) rất quen thuộc với nhà nông.|CN|Phân đạm Urê
+NH4NO3|🌾 🌿 💥|Phân đạm hai lá vừa cung cấp ion amoni vừa cung cấp ion nitrat cho cây.|CN|Amoni nitrat (Đạm 2 lá)
+(NH4)2SO4|🌾 🟡 🌱|Phân đạm sunfat cung cấp đồng thời cả nitơ lẫn lưu huỳnh cho đất trồng.|CN|Amoni sunfat (Đạm SA)
+Ca(H2PO4)2|🌾 🌼 🚜|Thành phần dinh dưỡng tan được trong phân lân Supephotphat giúp cây ra rễ.|CN|Canxi đihiđrophotphat (Supephotphat)
+KCl|🌾 🍉 🔴|Phân kali đỏ giúp cây trồng cứng cáp, chống đổ ngã và tăng độ ngọt quả.|CN|Phân Kali clorua
+K2SO4|☕ 🚬 ⚪|Phân kali trắng không chứa clo, chuyên bón cho cà phê, chè và thuốc lá.|CN|Phân Kali sunfat
+KNO3|🎇 🌾 💥|Diêm tiêu vừa làm phân bón kích ra hoa vừa là thành phần chính của thuốc súng đen.|CN|Kali nitrat (Diêm tiêu)
+(NH4)2HPO4|🌾 💪 🚜|Phân bón phức hợp DAP cung cấp đồng thời hàm lượng cao cả đạm lẫn lân.|CN|Điamoni photphat (Phân DAP)
+NH4H2PO4|🌱 💧 🚜|Phân MAP hòa tan hoàn toàn chuyên dùng cho hệ thống tưới nhỏ giọt công nghệ cao.|CN|Monoamoni photphat (Phân MAP)
+CaCN2|🌾 🛡️ 🚜|Canxi xianamit - loại phân bón vôi nitơ giúp cải tạo đất và diệt cỏ dại.|CN|Canxi xianamit
+CaO|🧱 🔥 🌾|Vôi sống nung từ đá vôi, tỏa nhiệt mạnh khi tôi và dùng khử chua đất phèn.|CN|Canxi oxit (Vôi sống)
+CaCO3|🏔️ 🏛️ 🧱|Đá vôi và đá cẩm thạch - nguyên liệu cốt lõi để sản xuất xi măng xây dựng.|CN|Đá vôi (Canxi cacbonat)
+CaSO4|🏛️ 🧱 ⚪|Khoáng vật Thạch cao dùng làm trần nhà chống cháy và điều chỉnh đông kết xi măng.|CN|Thạch cao (Canxi sunfat)
+Al2O3|⛏️ ✈️ 💎|Quặng Boxit - nguồn nguyên liệu duy nhất điện phân luyện nhôm; cũng là đá Ruby.|CN|Quặng Boxit / Corundum
+Fe2O3|⛏️ 🔴 🏗️|Quặng Hematit đỏ - nguồn quặng sắt quan trọng nhất cho lò cao luyện gang thép.|CN|Quặng Hematit
+Fe3O4|⛏️ ⚫ 🧲|Quặng Manhetit giàu hàm lượng sắt nhất trong tự nhiên và có từ tính mạnh.|CN|Quặng Manhetit
+FeS2|⛏️ ✨ 🃏|Quặng Pirit sắt ánh vàng rực gọi là "vàng của kẻ ngốc", dùng sản xuất H2SO4.|CN|Quặng Pirit sắt
+FeCO3|⛏️ 🟤 🏗️|Quặng Xiđerit chứa sắt cacbonat dùng khai thác luyện gang thép.|CN|Quặng Xiđerit
+CaMg(CO3)2|⛰️ 🧱 🌾|Quặng Đolomit dùng làm gạch chịu lửa lò luyện kim và bón cải tạo ao nuôi tôm.|CN|Quặng Đolomit
+Ca3(PO4)2|⛏️ 🌾 🦴|Thành phần chính của quặng Apatit Lào Cai và Photphorit để sản xuất phân lân.|CN|Quặng Apatit / Photphorit
+CuFeS2|⛏️ 🟡 🔌|Quặng Chalcopyrit - nguồn quặng thiên nhiên lớn nhất để luyện đồng.|CN|Quặng Chalcopyrit
+PbS|⛏️ 🩶 🔋|Quặng Galena ánh kim xám chì là nguồn chính khai thác kim loại chì.|CN|Quặng Galena
+HgS|⛏️ 🔴 🎨|Quặng Thần sa / Chu sa màu đỏ son dùng luyện thủy ngân và làm bột màu cổ đại.|CN|Quặng Chu sa (Thần sa)
+SnO2|⛏️ ⚫ 🥫|Quặng Cassiterit màu nâu đen - nguồn khai thác chính kim loại thiếc.|CN|Quặng Cassiterit
+CaF2|💎 💜 🧪|Khoáng vật Florit phát huỳnh quang đẹp mắt, nguyên liệu sản xuất axit HF.|CN|Khoáng vật Florit
+Cu2(OH)2CO3|💎 💚 🌀|Đá Khổng tước Malachit nổi tiếng với hoa văn vân xoáy xanh lục tuyệt đẹp.|CN|Quặng Malachit (Đá Khổng tước)
+FeCr2O4|⛏️ ⚫ 🛡️|Quặng Cromit dùng tinh luyện crom sản xuất thép không gỉ siêu bền.|CN|Quặng Cromit
+FeTiO3|🏖️ ⚫ 🚀|Quặng Ilmenit có nhiều trong cát đen ven biển Việt Nam dùng khai thác Titan.|CN|Quặng Ilmenit
+ZrSiO4|🪨 ⏳ 💎|Khoáng vật Zircon lâu đời nhất vỏ Trái Đất, dùng làm gạch men và gốm kỹ thuật.|CN|Khoáng vật Zircon
+SiO2|🏖️ 🪟 💎|Cát trắng thạch anh - nguyên liệu cơ bản để nấu ra mọi loại thủy tinh.|CN|Thạch anh (Silic đioxit)
+Na2SiO3|🪟 💧 🔥|Thủy tinh lỏng dung dịch đặc sánh dùng dán gỗ, chống thấm và tẩm vải chống cháy.|CN|Natri silicat (Thủy tinh lỏng)
+CaC2|🪨 🍌 🔥|Đất đèn nhỏ nước vào sinh khí axetilen dùng đèn mỏ, hàn gió đá và giấm chuối.|CN|Canxi cacbua (Đất đèn)
+SiC|⚙️ 💎 ⚡|Cacbua silic siêu cứng dùng chế tạo đá mài công nghiệp và chip công suất xe điện.|CN|Silic cacbua (Carborundum)
+WC|🔩 ⚒️ 💎|Cacbua vonfram siêu cứng gấp đôi thép dùng làm mũi khoan bê tông và lưỡi cắt.|CN|Vonfram cacbua
+BN|💎 🔥 ⚙️|Bo nitrua dạng lập phương là vật liệu siêu cứng sánh ngang kim cương.|CN|Bo nitrua
+B4C|🦺 🛡️ 💎|Bo cacbua vật liệu gốm siêu nhẹ siêu cứng làm tấm áo giáp chống đạn.|CN|Bo cacbua
+GaAs|💻 💡 🛰️|Chất bán dẫn Gali asenua làm đèn LED hồng ngoại và pin mặt trời vệ tinh vũ trụ.|CN|Gali asenua
+GaN|🔌 ⚡ 💡|Bán dẫn Gali nitrua giúp chế tạo củ sạc nhanh điện thoại siêu nhỏ gọn và đèn LED xanh.|CN|Gali nitrua
+InP|📡 ⚡ 💻|Vật liệu bán dẫn Inđi photphua dùng trong chip viễn thông laser tốc độ cao.|CN|Inđi photphua
+LiCoO2|📱 🔋 ⚡|Vật liệu cực dương truyền thống tạo nên cuộc cách mạng pin Lithium-ion.|CN|Liti coban oxit (Pin LCO)
+LiFePO4|🚗 🔋 🛡️|Vật liệu cực dương pin LFP siêu an toàn, chống cháy nổ trên xe ô tô điện.|CN|Liti sắt photphat (Pin LFP)
+LiPF6|🔋 💧 ⚡|Muối chất điện phân cốt lõi giúp ion liti di chuyển bên trong pin sạc.|CN|Liti hexaflophotphat
+PbO2|🔋 🏍️ ⚡|Chì(IV) oxit dùng làm bản cực dương bên trong bình ắc quy xe máy, ô tô.|CN|Chì(IV) oxit (Ắc quy chì)
+V2O5|🏭 🧪 🔥|Vanadi(V) oxit - chất xúc tác cốt lõi trong công nghiệp sản xuất axit sunfuric.|CN|Vanadi(V) oxit
+TiCl4|✈️ ☁️ 🧪|Titan tetraclorua bốc khói trắng dày đặc dùng tạo màn khói và luyện kim loại Titan.|CN|Titan(IV) clorua
+O3|🌍 🛡️ ☀️|Khí tạo tầng chắn trên cao bảo vệ sinh vật Trái Đất khỏi tia cực tím UV độc hại.|CN|Ozon (Tầng Ozon)
+SF6|⚡ 🗣️ 🏭|Khí lưu huỳnh hexaflorua cách điện cao áp và làm giọng nói trầm sâu kỳ lạ.|CN|Lưu huỳnh hexaflorua
+CCl2F2|❄️ 🌍 🚫|Khí Freon-12 (CFC) từng dùng trong tủ lạnh nhưng bị cấm vì phá hủy tầng ozon.|CN|Freon-12 (CFC-12)
+C2H2F4|❄️ 🚗 🌬️|Khí gas lạnh R-134a thay thế CFC dùng phổ biến trong điều hòa ô tô và tủ lạnh.|CN|Gas lạnh R-134a
+HCN|☠️ 🌰 ⚠️|Axit xianhidric cực độc có mùi hạnh nhân đắng, dùng trong tổng hợp hóa chất.|CN|Axit xianhidric (Xyanua)
+KCN|☠️ 💍 ⛏️|Kali xyanua muối cực độc dùng hòa tan chiết tách vàng khỏi quặng công nghiệp.|CN|Kali xyanua
+NaCN|⛏️ 🪙 ☠️|Natri xyanua dùng rộng rãi trong ngành khai khoáng tinh chế vàng và mạ kim loại.|CN|Natri xyanua
+COCl2|☠️ 🌾 ⚠️|Khí độc Photgen mùi cỏ mới cắt từng làm vũ khí hóa học, nay dùng sản xuất nhựa PC.|CN|Photgen
+C4H8Cl2S|☠️ 🟡 ⚠️|Khí mù tạt (Yperit) gây phồng rộp da nghiêm trọng từng xuất hiện trong Thế chiến I.|CN|Khí mù tạt
+C7H5N3O6|💣 💥 🏗️|Thuốc nổ TNT nổi tiếng dùng phá đá khai thác mỏ và trong quân sự.|CN|TNT (Trinitrotoluen)
+C3H5N3O9|💥 🧨 💓|Nitroglixerin vừa là thuốc nổ trong thuốc nổ Dynamite vừa chữa đau thắt ngực.|CN|Nitroglixerin
+C3H6N6O6|💣 💥 🪖|Thuốc nổ mạnh RDX (C-4) có sức công phá vượt trội hơn hẳn TNT.|CN|RDX (Thuốc nổ C-4)
+C5H8N4O12|💥 ⛏️ 🧨|Thuốc nổ PETN cực mạnh dùng làm lõi dây nổ phá đá trong hầm mỏ.|CN|PETN
+NaN3|🚗 💥 🛡️|Natri azua phân hủy cực nhanh giải phóng khí N2 làm bung túi khí ô tô khi va chạm.|CN|Natri azua (Túi khí ô tô)
+N2H4|🚀 🔥 🛰️|Hiđrazin chất lỏng bốc khói dùng làm nhiên liệu đẩy cho tên lửa và vệ tinh.|CN|Hiđrazin
+Al4C3|🪨 💧 🔥|Nhôm cacbua phản ứng với nước giải phóng ngay khí metan tinh khiết.|CN|Nhôm cacbua
+Zn3P2|🐀 ☠️ 🌾|Kẽm photphua thành phần thuốc diệt chuột bảo vệ mùa màng rất độc.|CN|Kẽm photphua
+CuSO4|🍇 🍄 🔵|Pha với vôi tạo dung dịch Bordeaux phun diệt nấm mốc cho vườn nho, cây ăn quả.|CN|Đồng(II) sunfat nông nghiệp
+Ca(ClO)2|🏊 🦠 ⚪|Bột Clorin nồng độ cao chuyên khử trùng nước hồ bơi và ao nuôi thủy sản.|CN|Canxi hipoclorit (Clorin)
+ClO2|💧 🏭 🟡|Khí Clo đioxit dùng tẩy trắng bột giấy hiện đại và khử trùng nước sạch an toàn.|CN|Clo đioxit
+NaOH|📄 🏭 🛢️|Hóa chất cơ bản hàng đầu dùng nấu bột giấy, lọc dầu và tinh chế nhôm từ boxit.|CN|Xút công nghiệp
+Na3AlF6|⚡ ✈️ 🏭|Khoáng chất Criolit pha vào Al2O3 giúp hạ nhiệt độ nóng chảy khi điện phân nhôm.|CN|Criolit
+ZrO2|🦷 🔪 🔥|Zirconia gốm kỹ thuật siêu bền dùng làm dao gốm sắc bén và răng sứ cao cấp.|CN|Zirconi đioxit (Zirconia)
+MgO|🔥 🧱 🏭|Vật liệu chịu lửa trắng có nhiệt độ nóng chảy hơn 2800°C dùng lót lò luyện thép.|CN|Magie oxit chịu lửa
+CaSiO3|🏗️ 🧱 🏭|Canxi silicat thành phần quan trọng cấu tạo nên clinker xi măng Portland.|CN|Canxi silicat
+Na2CO3|🪟 🏭 ⚪|Soda công nghiệp (Tro soda) là nguyên liệu thiết yếu nấu chảy cát thành thủy tinh.|CN|Tro soda (Natri cacbonat)
+KClO3|🔥 🎆 🧪|Kali clorat chất oxy hóa mạnh có trên đầu que diêm giúp bật lửa bùng cháy.|CN|Kali clorat (Đầu que diêm)
+P4S3|🔥 🪵 🟡|Hợp chất phốt pho sunfua nhạy ma sát dùng trên đầu diêm quẹt mọi bề mặt.|CN|Tetraphotpho trisunfua
+BaSO4|🛢️ 🎨 ⚖️|Khoáng chất Barit siêu nặng trộn bùn khoan giếng dầu và làm bột độn sơn trắng.|CN|Barit (Bari sunfat)
+SrCO3|🎆 🔴 📺|Stronti cacbonat tạo ánh sáng đỏ rực trong pháo hoa và kính màn hình chống tia X.|CN|Stronti cacbonat
+Ba(NO3)2|🎆 🟢 💥|Bari nitrat tạo sắc xanh lá cây chói lọi trên bầu trời lễ hội pháo hoa.|CN|Bari nitrat
+CuCl|🎆 🔵 🔥|Đồng(I) clorua bí quyết tạo ra ánh sáng xanh lam khó chế tạo nhất trong pháo hoa.|CN|Đồng(I) clorua
+Al2(SO4)3|💧 🏭 📄|Phèn nhôm đơn dùng keo tụ làm trong nước thải và gia keo trong sản xuất giấy.|CN|Nhôm sunfat (Phèn nhôm)
+FeCl3|🔌 💻 🟡|Dung dịch ăn mòn lớp đồng thừa để khắc mạch in điện tử PCB thủ công.|CN|Sắt(III) clorua ăn mòn mạch
+AgI|☁️ 🌧️ ✈️|Bạc iotua được máy bay rải vào mây để kích thích tạo mưa nhân tạo chống hạn.|CN|Bạc iotua (Tạo mưa nhân tạo)
+CaCl2|❄️ 🛣️ 💧|Muối rải lên đường phố mùa đông ở xứ lạnh để làm tan băng tuyết nhanh chóng.|CN|Canxi clorua tan băng
+MgCl2|❄️ 🛣️ 🧱|Muối chống đóng băng mặt đường và làm chất kết dính xi măng Sorel.|CN|Magie clorua công nghiệp
+Na2S2O3|📷 🐠 💧|Chất khử clo dư trong nước nuôi cá cảnh và thuốc hãm ảnh phim nhựa cổ điển.|CN|Natri thiosunfat (Hypo)
+Na2SO4|🏭 🧼 🪟|Hóa chất dùng trong quy trình Kraft nấu gỗ làm giấy bìa cứng và độn bột giặt.|CN|Natri sunfat công nghiệp
+H2O2|🚀 💨 📄|Nồng độ đặc 90% từng làm nhiên liệu đẩy tên lửa và tẩy trắng giấy thân thiện môi trường.|CN|Hydro peroxit công nghiệp
+NH3|❄️ 🏭 🌾|Môi chất lạnh trong kho đông lạnh lớn và nguyên liệu sản xuất mọi loại phân đạm.|CN|Amoniac công nghiệp
+CH4|🌍 🐄 🔥|Khí nhà kính có khả năng giữ nhiệt mạnh gấp hơn 25 lần khí CO2 trong khí quyển.|CN|Khí nhà kính Metan
+N2O|🌍 🌾 🏭|Khí nhà kính mạnh thứ ba phát thải từ phân bón nông nghiệp và đốt nhiên liệu.|CN|Khí nhà kính N2O
+SO2|🌧️ 🏭 💨|Khí thải từ đốt than đá và luyện kim là thủ phạm hàng đầu gây ra mưa axit.|CN|Khí gây mưa axit SO2
+NO2|🌧️ 🚗 🟤|Khí thải từ động cơ xe cộ tạo sương mù quang hóa màu nâu và mưa axit.|CN|Khí thải NO2
+CO|🚗 ☠️ 💨|Khí độc sinh ra khi đốt than tổ ong trong phòng kín, gắn chặt hồng cầu gây ngạt thở.|CN|Khí độc CO
+C2H3Cl|🏗️ 🚰 🧪|Vinyl clorua - khí monome trùng hợp tạo ống nhựa PVC xây dựng phổ biến nhất.|CN|Vinyl clorua (Nhựa PVC)
+C2F4|🍳 💧 🧪|Tetrafloetilen trùng hợp thành lớp phủ Teflon siêu chống dính trên chảo rán.|CN|Tetrafloetilen (Teflon)
+C4H5Cl|🤿 🛞 🧪|Cloropren trùng hợp tạo cao su tổng hợp Neoprene chịu dầu và làm đồ lặn biển.|CN|Cloropren (Cao su Neoprene)
+C15H16O2|🥤 💻 ⚠️|Bisphenol A (BPA) nguyên liệu làm nhựa cứng Polycarbonate và nhựa Epoxy.|CN|Bisphenol A (BPA)
+C3H6N6|🍽️ 🧱 🧪|Melamine nguyên liệu tạo nhựa cứng chịu nhiệt làm bát đĩa và gỗ công nghiệp chống xước.|CN|Melamine
+C6H6Cl6|🌾 🪲 🚫|Thuốc trừ sâu 666 (Lindan) cực độc, khó phân hủy nên đã bị cấm toàn cầu.|CN|Thuốc trừ sâu 666
+C14H9Cl5|🦟 🌾 🚫|Thuốc trừ sâu DDT từng rất nổi tiếng nhưng bị cấm vì tích tụ độc hại trong chuỗi thức ăn.|CN|Thuốc trừ sâu DDT
+C3H8NO5P|🌿 🚜 ⚠️|Hoạt chất Glyphosate trong thuốc diệt cỏ phổ rộng gây nhiều tranh cãi toàn cầu.|CN|Glyphosate
+ZnS|⛏️ 🪨 🔋|Quặng Sphalerit (Blende kẽm) - nguồn quặng chính khai thác kim loại kẽm trên thế giới.|CN|Quặng Sphalerit (Kẽm sunfua)
+Sb2S3|⛏️ 🩶 🔥|Quặng Stibnit ánh kim bạc từng dùng làm phấn kẻ mắt cổ đại và luyện Antimon.|CN|Quặng Stibnit
+MoS2|⚙️ 🛢️ ⚫|Khoáng vật Molipđenit lớp trơn mịn dùng làm chất bôi trơn khô chịu nhiệt cực tốt.|CN|Molipđen đisunfua
+MnO2|⛏️ ⚫ 🔋|Quặng Pyrolusit màu đen là nguồn chính khai thác mangan và làm cực pin kiềm.|CN|Quặng Pyrolusit
+UO2|☢️ ⚡ 🏭|Urani đioxit ép thành viên gốm nhỏ làm thanh nhiên liệu cho lò phản ứng hạt nhân.|CN|Urani đioxit
+UF6|☢️ 💨 🏭|Urani hexaflorua ở dạng khí dùng trong máy ly tâm làm giàu đồng vị Urani-235.|CN|Urani hexaflorua
+D2O|☢️ 💧 ⚖️|Nước nặng chứa đồng vị Đơteri dùng làm chất điều hòa neutron trong lò phản ứng.|CN|Nước nặng (Đơteri oxit)
+Li2O|📱 🪟 🔋|Liti oxit pha vào gốm thủy tinh giúp mặt bếp từ và kính cường lực chịu sốc nhiệt.|CN|Liti oxit
+B2O3|🪟 🔥 🧪|Bo trioxit thành phần quyết định độ bền nhiệt của thủy tinh chịu nhiệt Pyrex.|CN|Bo trioxit
+NaBH4|🧪 ⚡ 🏭|Natri borohidrua chất khử mạnh an toàn dùng rộng rãi trong công nghiệp dược phẩm.|CN|Natri borohidrua
+LiAlH4|🧪 🔥 ⚗️|Liti nhôm hidrua chất khử hữu cơ cực mạnh phản ứng dữ dội với nước.|CN|Liti nhôm hidrua
+Ca(NO3)2|🌱 🍅 🧱|Phân đạm canxi chống thối đít quả cà chua và phụ gia đông kết nhanh bê tông.|CN|Canxi nitrat
+K2SiO3|🪴 🛡️ 🧱|Kali silicat dùng làm phân bón tăng sức đề kháng sâu bệnh và sơn khoáng chống rêu.|CN|Kali silicat
+Co3O4|🔵 🏺 🔋|Oxit coban tạo màu xanh coban cổ điển cho gốm sứ Bát Tràng và cực pin sạc.|CN|Coban(II,III) oxit
+`.trim();
+
+    /**
+     * ============================================================================
+     * CẤU HÌNH DANH MỤC & PHÂN TÍCH DỮ LIỆU CÂU HỎI
+     * ============================================================================
+     */
+    const CATEGORIES = {
+      ALL:  { id: 'ALL',  label: 'Tất cả',               icon: '🧪' },
+      YT:   { id: 'YT',   label: 'Y tế & Dược',          icon: '💊' },
+      THPT: { id: 'THPT', label: 'Hóa THPT',             icon: '📚' },
+      TD:   { id: 'TD',   label: 'Hàng tiêu dùng',       icon: '🧴' },
+      NT:   { id: 'NT',   label: 'Nguyên tố',            icon: '⚛️' },
+      CN:   { id: 'CN',   label: 'Công nghiệp & Khoáng', icon: '🏭' }
+    };
+
+    /**
+     * Chuyển một khối chuỗi dữ liệu nén thành mảng đối tượng câu hỏi.
+     */
+    function parseRawBlock(rawText) {
+      return rawText
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0 && line.includes('|'))
+        .map(line => {
+          const parts = line.split('|');
+          const formula = (parts[0] || '').trim();
+          const emojiTokens = (parts[1] || '🧪 ⚗️ ✨').trim().split(/\s+/);
+          const hint = (parts[2] || '').trim();
+          const cat = (parts[3] || 'THPT').trim();
+          const name = (parts[4] || formula).trim();
+          return {
+            formula,
+            emojis: [
+              emojiTokens[0] || '🧪',
+              emojiTokens[1] || '⚗️',
+              emojiTokens[2] || '✨'
+            ],
+            hint,
+            cat,
+            name
+          };
+        })
+        .filter(q => q.formula.length > 0);
+    }
+
+    /**
+     * Xây dựng danh sách câu hỏi xen kẽ các lĩnh vực để người chơi luôn thấy mới mẻ,
+     * đồng thời giữ 3 màn mẫu quen thuộc ở ngay đầu danh sách.
+     */
+    function buildQuestionBank() {
+      const featured = parseRawBlock(RAW_FEATURED);
+      const buckets = [
+        parseRawBlock(RAW_YT),
+        parseRawBlock(RAW_THPT),
+        parseRawBlock(RAW_TD),
+        parseRawBlock(RAW_NT),
+        parseRawBlock(RAW_CN)
+      ];
+
+      const interleaved = [];
+      let added = true;
+      let cursor = 0;
+      while (added) {
+        added = false;
+        for (let b = 0; b < buckets.length; b++) {
+          if (cursor < buckets[b].length) {
+            interleaved.push(buckets[b][cursor]);
+            added = true;
+          }
+        }
+        cursor++;
+      }
+
+      const all = [...featured, ...interleaved];
+      return all.map((q, idx) => ({
+        ...q,
+        id: idx,
+        level: idx + 1
+      }));
+    }
+
+    const QUESTIONS = buildQuestionBank();
+
+    /**
+     * ============================================================================
+     * BỘ TỔNG HỢP ÂM THANH (WEB AUDIO API - KHÔNG CẦN FILE NGOÀI)
+     * ============================================================================
+     */
+    let audioCtx = null;
+
+    function getAudioContext() {
+      try {
+        if (!audioCtx) {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (Ctx) audioCtx = new Ctx();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+      } catch (e) {
+        // Bỏ qua nếu trình duyệt chặn âm thanh
+      }
+      return audioCtx;
+    }
+
+    function playTone(freq, duration, type = 'sine', volume = 0.08, delay = 0) {
+      if (!state.soundOn) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      try {
+        const now = ctx.currentTime + delay;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(volume, now + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + duration + 0.02);
+      } catch (e) {
+        // An toàn khi lỗi thiết bị âm thanh
+      }
+    }
+
+    const SFX = {
+      tap:   () => playTone(520, 0.065, 'triangle', 0.07),
+      undo:  () => playTone(340, 0.065, 'sine', 0.06),
+      error: () => {
+        playTone(190, 0.14, 'sawtooth', 0.06, 0);
+        playTone(155, 0.18, 'sawtooth', 0.06, 0.11);
+      },
+      win:   () => {
+        playTone(523.25, 0.16, 'triangle', 0.09, 0.00);
+        playTone(659.25, 0.16, 'triangle', 0.09, 0.09);
+        playTone(783.99, 0.18, 'triangle', 0.09, 0.18);
+        playTone(1046.5, 0.34, 'triangle', 0.10, 0.27);
+      },
+      coin:  () => {
+        playTone(880, 0.11, 'sine', 0.08, 0);
+        playTone(1318.5, 0.22, 'sine', 0.08, 0.08);
+      }
+    };
+
+    /**
+     * ============================================================================
+     * TRẠNG THÁI TRÒ CHƠI & LƯU TRỮ LOCALSTORAGE
+     * ============================================================================
+     */
+    const STORAGE_KEY = 'chem_quiz_mobile_v1';
+
+    const state = {
+      currentIdx: 0,
+      solvedSet: new Set(),
+      coins: 150,
+      soundOn: true,
+      shuffleMode: false,
+      activeFilter: 'ALL',
+      searchQuery: '',
+      // Trạng thái của màn hiện tại
+      slots: [],      // [{ char: string|null, keyIdx: number|null, locked: boolean }]
+      keys: [],       // [{ idx: number, char: string, isAnswerChar: boolean, used: boolean, eliminated: boolean }]
+      isChecking: false
+    };
+
+    function loadProgress() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        if (typeof data.currentIdx === 'number' && data.currentIdx >= 0 && data.currentIdx < QUESTIONS.length) {
+          state.currentIdx = data.currentIdx;
+        }
+        if (Array.isArray(data.solvedIds)) {
+          state.solvedSet = new Set(data.solvedIds.filter(id => id >= 0 && id < QUESTIONS.length));
+        }
+        if (typeof data.coins === 'number' && data.coins >= 0) {
+          state.coins = data.coins;
+        }
+        if (typeof data.soundOn === 'boolean') {
+          state.soundOn = data.soundOn;
+        }
+        if (typeof data.shuffleMode === 'boolean') {
+          state.shuffleMode = data.shuffleMode;
+        }
+      } catch (e) {
+        // Không làm gián đoạn nếu localStorage bị giới hạn
+      }
+    }
+
+    function saveProgress() {
+      try {
+        const payload = {
+          currentIdx: state.currentIdx,
+          solvedIds: Array.from(state.solvedSet),
+          coins: state.coins,
+          soundOn: state.soundOn,
+          shuffleMode: state.shuffleMode
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch (e) {
+        // Bỏ qua nếu bộ nhớ đầy hoặc ẩn danh
+      }
+    }
+
+    /**
+     * ============================================================================
+     * TIỆN ÍCH HIỂN THỊ & BỘ SINH BÀN PHÍM CÓ SEED ỔN ĐỊNH
+     * ============================================================================
+     */
+    function mulberry32(seed) {
+      let a = seed >>> 0;
+      return function () {
+        a |= 0;
+        a = (a + 0x6D2B79F5) | 0;
+        let t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function formatFormulaHTML(formula) {
+      return formula.replace(/(\d+)/g, '<sub>$1</sub>');
+    }
+
+    function normalizeVN(str) {
+      return (str || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd');
+    }
+
+    /**
+     * Tạo bàn phím trộn ký tự đúng với ký tự gây nhiễu hóa học hợp lý.
+     * Mặc định 15 phím (6-6-3), tự động mở rộng 18 phím (6-6-6) nếu công thức quá dài.
+     */
+    function generateKeysForLevel(question) {
+      const chars = Array.from(question.formula);
+      const totalKeys = chars.length <= 12 ? 15 : 18;
+      const rand = mulberry32((question.level * 2654435761) ^ 0x9E3779B9);
+
+      const upperPool = ['H', 'C', 'N', 'O', 'S', 'P', 'K', 'F', 'B', 'W', 'V', 'D', 'Q', 'T', 'R', 'M', 'A', 'L', 'G', 'Z', 'X'];
+      const lowerPool = ['a', 'i', 'l', 'e', 'n', 'r', 'u', 'g', 'o', 'f', 'd', 'z', 's', 'b', 'c', 'h', 'k', 'm', 't', 'v', 'x'];
+      const digitPool = ['2', '3', '4', '5', '6', '7', '8', '9', '1'];
+      const extraPool = ['(', ')'];
+
+      const keyList = chars.map(ch => ({
+        char: ch,
+        isAnswerChar: true,
+        used: false,
+        eliminated: false
+      }));
+
+      const neededNoise = totalKeys - keyList.length;
+      const hasParens = chars.includes('(') || chars.includes(')');
+
+      for (let i = 0; i < neededNoise; i++) {
+        const roll = rand();
+        let pool;
+        if (roll < 0.44) {
+          pool = upperPool;
+        } else if (roll < 0.74) {
+          pool = lowerPool;
+        } else if (roll < 0.94 || hasParens) {
+          pool = digitPool;
+        } else {
+          pool = extraPool;
+        }
+        const pick = pool[Math.floor(rand() * pool.length)];
+        keyList.push({
+          char: pick,
+          isAnswerChar: false,
+          used: false,
+          eliminated: false
+        });
+      }
+
+      // Trộn Fisher-Yates theo seed cố định của màn
+      for (let i = keyList.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        const tmp = keyList[i];
+        keyList[i] = keyList[j];
+        keyList[j] = tmp;
+      }
+
+      return keyList.map((k, idx) => ({ ...k, idx }));
+    }
+
+    /**
+     * ============================================================================
+     * PHẦN TỬ DOM & THÔNG BÁO TOAST
+     * ============================================================================
+     */
+    const els = {
+      levelTitle: document.getElementById('level-title'),
+      solvedBadge: document.getElementById('solved-badge'),
+      categoryPill: document.getElementById('category-pill'),
+      coinValue: document.getElementById('coin-value'),
+      btnSound: document.getElementById('btn-sound'),
+      btnOpenMenu: document.getElementById('btn-open-menu'),
+      btnOpenHint: document.getElementById('btn-open-hint'),
+      emoji1: document.getElementById('emoji-1'),
+      emoji2: document.getElementById('emoji-2'),
+      emoji3: document.getElementById('emoji-3'),
+      hintText: document.getElementById('hint-text'),
+      shuffleIndicator: document.getElementById('shuffle-indicator'),
+      btnClearAll: document.getElementById('btn-clear-all'),
+      slotsContainer: document.getElementById('slots-container'),
+      keyboardContainer: document.getElementById('keyboard-container'),
+      toast: document.getElementById('toast'),
+      // Modal Victory
+      modalVictory: document.getElementById('modal-victory'),
+      victoryEmojis: document.getElementById('victory-emojis'),
+      victoryFormula: document.getElementById('victory-formula'),
+      victoryName: document.getElementById('victory-name'),
+      victoryCategory: document.getElementById('victory-category'),
+      victoryHint: document.getElementById('victory-hint'),
+      victoryReward: document.getElementById('victory-reward'),
+      btnNextLevel: document.getElementById('btn-next-level'),
+      // Modal Hint
+      modalHint: document.getElementById('modal-hint'),
+      hintCoinBalance: document.getElementById('hint-coin-balance'),
+      btnCloseHint: document.getElementById('btn-close-hint'),
+      actRevealOne: document.getElementById('act-reveal-one'),
+      actRemoveNoise: document.getElementById('act-remove-noise'),
+      actSolveLevel: document.getElementById('act-solve-level'),
+      actFreeCoins: document.getElementById('act-free-coins'),
+      // Modal Menu
+      modalMenu: document.getElementById('modal-menu'),
+      progressText: document.getElementById('progress-text'),
+      progressBarFill: document.getElementById('progress-bar-fill'),
+      btnCloseMenu: document.getElementById('btn-close-menu'),
+      menuSearch: document.getElementById('menu-search'),
+      btnToggleShuffle: document.getElementById('btn-toggle-shuffle'),
+      shuffleIcon: document.getElementById('shuffle-icon'),
+      shuffleLabel: document.getElementById('shuffle-label'),
+      categoryFilters: document.getElementById('category-filters'),
+      btnJumpUnsolved: document.getElementById('btn-jump-unsolved'),
+      btnAskReset: document.getElementById('btn-ask-reset'),
+      resetConfirmBox: document.getElementById('reset-confirm-box'),
+      btnCancelReset: document.getElementById('btn-cancel-reset'),
+      btnConfirmReset: document.getElementById('btn-confirm-reset'),
+      levelGrid: document.getElementById('level-grid')
+    };
+
+    let toastTimer = null;
+    function showToast(msg) {
+      els.toast.textContent = msg;
+      els.toast.classList.remove('opacity-0', '-translate-y-2');
+      els.toast.classList.add('opacity-100', 'translate-y-0');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        els.toast.classList.remove('opacity-100', 'translate-y-0');
+        els.toast.classList.add('opacity-0', '-translate-y-2');
+      }, 2100);
+    }
+
+    /**
+     * ============================================================================
+     * RENDER GIAO DIỆN MÀN CHƠI CHÍNH
+     * ============================================================================
+     */
+    function renderSoundButton() {
+      if (state.soundOn) {
+        els.btnSound.innerHTML = `
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+          </svg>`;
+        els.btnSound.classList.remove('text-slate-600');
+        els.btnSound.classList.add('text-slate-200');
+      } else {
+        els.btnSound.innerHTML = `
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6l4.72-4.72a.75.75 0 011.28.531V19.94a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.506-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.395C2.806 8.757 3.63 8.25 4.51 8.25H6.75z" />
+          </svg>`;
+        els.btnSound.classList.remove('text-slate-200');
+        els.btnSound.classList.add('text-slate-600');
+      }
+    }
+
+    function updateCoinsUI() {
+      els.coinValue.textContent = state.coins;
+      els.hintCoinBalance.textContent = state.coins;
+    }
+
+    function loadLevel(idx) {
+      state.currentIdx = Math.max(0, Math.min(idx, QUESTIONS.length - 1));
+      state.isChecking = false;
+
+      const q = QUESTIONS[state.currentIdx];
+      state.slots = Array.from(q.formula).map(() => ({
+        char: null,
+        keyIdx: null,
+        locked: false
+      }));
+      state.keys = generateKeysForLevel(q);
+
+      // Cập nhật thông tin phần trên
+      els.levelTitle.textContent = `Màn ${q.level}`;
+      const catInfo = CATEGORIES[q.cat] || CATEGORIES.THPT;
+      els.categoryPill.textContent = `${catInfo.icon} ${catInfo.label}`;
+
+      if (state.solvedSet.has(q.id)) {
+        els.solvedBadge.classList.remove('hidden');
+      } else {
+        els.solvedBadge.classList.add('hidden');
+      }
+
+      els.emoji1.textContent = q.emojis[0];
+      els.emoji2.textContent = q.emojis[1];
+      els.emoji3.textContent = q.emojis[2];
+      els.hintText.textContent = `Gợi ý: ${q.hint}`;
+
+      els.shuffleIndicator.classList.toggle('hidden', !state.shuffleMode);
+
+      updateCoinsUI();
+      renderSlots();
+      renderKeyboard();
+      saveProgress();
+    }
+
+    /**
+     * Tính toán kích thước ô đáp án tự động co giãn để luôn nằm gọn trên 1 hàng duy nhất.
+     */
+    function computeSlotMetrics(len) {
+      const containerW = Math.min(window.innerWidth, 480) - 36;
+      const gap = len >= 10 ? 4 : len >= 8 ? 5 : 7;
+      const maxPerSlot = Math.floor((containerW - gap * (len - 1)) / len);
+
+      let idealW = 48;
+      let idealH = 50;
+      let fontSize = 22;
+
+      if (len >= 11) {
+        idealW = 30; idealH = 38; fontSize = 14.5;
+      } else if (len >= 9) {
+        idealW = 34; idealH = 42; fontSize = 16.5;
+      } else if (len >= 7) {
+        idealW = 41; idealH = 46; fontSize = 19;
+      } else if (len >= 5) {
+        idealW = 46; idealH = 48; fontSize = 21;
+      }
+
+      const w = Math.max(22, Math.min(idealW, maxPerSlot));
+      const h = Math.max(34, Math.min(idealH, Math.round(w * 1.2)));
+      const fs = Math.max(13, Math.min(fontSize, Math.round(w * 0.56)));
+      return { w, h, fs, gap };
+    }
+
+    function renderSlots() {
+      const len = state.slots.length;
+      const { w, h, fs, gap } = computeSlotMetrics(len);
+      els.slotsContainer.style.gap = `${gap}px`;
+      els.slotsContainer.innerHTML = '';
+
+      let hasUnlockedFilled = false;
+
+      state.slots.forEach((slot, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'answer-slot';
+        btn.style.width = `${w}px`;
+        btn.style.height = `${h}px`;
+        btn.style.fontSize = `${fs}px`;
+        btn.dataset.slotIndex = i;
+
+        if (slot.char !== null) {
+          btn.textContent = slot.char;
+          if (slot.locked) {
+            btn.classList.add('locked');
+          } else {
+            btn.classList.add('filled');
+            hasUnlockedFilled = true;
+          }
+        }
+
+        btn.addEventListener('click', () => handleSlotClick(i));
+        els.slotsContainer.appendChild(btn);
+      });
+
+      els.btnClearAll.classList.toggle('hidden', !hasUnlockedFilled);
+    }
+
+    function renderKeyboard() {
+      els.keyboardContainer.innerHTML = '';
+      const total = state.keys.length;
+      // 15 phím -> 6, 6, 3 (chuẩn giao diện ảnh mẫu); 18 phím -> 6, 6, 6
+      const rowSizes = total === 15 ? [6, 6, 3] : [6, 6, 6];
+      let offset = 0;
+
+      rowSizes.forEach(count => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'flex items-center justify-center gap-2';
+
+        for (let i = 0; i < count && offset < total; i++, offset++) {
+          const keyObj = state.keys[offset];
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'key-tile';
+          // Giữ bề rộng đồng đều như lưới 6 cột kể cả ở hàng 3 ô căn giữa
+          btn.style.width = 'calc((100% - 40px) / 6)';
+          btn.textContent = keyObj.char;
+
+          if (keyObj.used) btn.classList.add('used');
+          if (keyObj.eliminated) btn.classList.add('eliminated');
+
+          const capturedIdx = keyObj.idx;
+          btn.addEventListener('click', () => handleKeyTap(capturedIdx));
+          rowDiv.appendChild(btn);
+        }
+
+        els.keyboardContainer.appendChild(rowDiv);
+      });
+    }
+
+    /**
+     * ============================================================================
+     * LOGIC TƯƠNG TÁC CHẠM Ô & KIỂM TRA ĐÁP ÁN
+     * ============================================================================
+     */
+    function handleKeyTap(keyIdx) {
+      if (state.isChecking) return;
+      const keyObj = state.keys[keyIdx];
+      if (!keyObj || keyObj.used || keyObj.eliminated) return;
+
+      const emptyPos = state.slots.findIndex(s => s.char === null);
+      if (emptyPos === -1) return;
+
+      SFX.tap();
+      state.slots[emptyPos] = {
+        char: keyObj.char,
+        keyIdx: keyObj.idx,
+        locked: false
+      };
+      keyObj.used = true;
+
+      renderSlots();
+      renderKeyboard();
+
+      // Nếu đã điền đủ mọi ô -> Tự động kiểm tra ngay
+      if (state.slots.every(s => s.char !== null)) {
+        evaluateAnswer();
+      }
+    }
+
+    function handleSlotClick(slotIdx) {
+      if (state.isChecking) return;
+      const slot = state.slots[slotIdx];
+      if (!slot || slot.char === null || slot.locked) return;
+
+      SFX.undo();
+      if (slot.keyIdx !== null && state.keys[slot.keyIdx]) {
+        state.keys[slot.keyIdx].used = false;
+      }
+      state.slots[slotIdx] = { char: null, keyIdx: null, locked: false };
+
+      renderSlots();
+      renderKeyboard();
+    }
+
+    function clearAllUnlockedSlots() {
+      if (state.isChecking) return;
+      let changed = false;
+      state.slots.forEach((slot, i) => {
+        if (slot.char !== null && !slot.locked) {
+          if (slot.keyIdx !== null && state.keys[slot.keyIdx]) {
+            state.keys[slot.keyIdx].used = false;
+          }
+          state.slots[i] = { char: null, keyIdx: null, locked: false };
+          changed = true;
+        }
+      });
+      if (changed) {
+        SFX.undo();
+        renderSlots();
+        renderKeyboard();
+      }
+    }
+
+    function evaluateAnswer(solvedViaHint = false) {
+      state.isChecking = true;
+      const q = QUESTIONS[state.currentIdx];
+      const attempt = state.slots.map(s => s.char).join('');
+      const slotBtns = els.slotsContainer.querySelectorAll('.answer-slot');
+
+      if (attempt === q.formula) {
+        slotBtns.forEach(b => b.classList.add('correct'));
+        SFX.win();
+        launchConfetti();
+
+        const isFirstSolve = !state.solvedSet.has(q.id);
+        state.solvedSet.add(q.id);
+        if (isFirstSolve && !solvedViaHint) {
+          state.coins += 20;
+        }
+        updateCoinsUI();
+        saveProgress();
+
+        setTimeout(() => {
+          openVictoryModal(q, isFirstSolve && !solvedViaHint);
+        }, 420);
+      } else {
+        slotBtns.forEach(b => b.classList.add('wrong'));
+        els.slotsContainer.classList.add('animate-shake');
+        SFX.error();
+
+        setTimeout(() => {
+          slotBtns.forEach(b => b.classList.remove('wrong'));
+          els.slotsContainer.classList.remove('animate-shake');
+          state.isChecking = false;
+        }, 480);
+      }
+    }
+
+    function openVictoryModal(q, earnedCoins) {
+      const catInfo = CATEGORIES[q.cat] || CATEGORIES.THPT;
+      els.victoryEmojis.textContent = q.emojis.join(' ');
+      els.victoryFormula.innerHTML = formatFormulaHTML(q.formula);
+      els.victoryName.textContent = q.name;
+      els.victoryCategory.textContent = `${catInfo.icon} ${catInfo.label}`;
+      els.victoryHint.textContent = q.hint;
+
+      if (earnedCoins) {
+        els.victoryReward.innerHTML = '<span>🪙</span> +20 Xu thưởng';
+        els.victoryReward.className = 'inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-sm font-bold mb-5';
+      } else {
+        els.victoryReward.innerHTML = '<span>✨</span> Hoàn thành màn chơi';
+        els.victoryReward.className = 'inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-sm font-bold mb-5';
+      }
+
+      els.modalVictory.classList.remove('hidden');
+    }
+
+    function goToNextLevel() {
+      els.modalVictory.classList.add('hidden');
+      if (state.shuffleMode) {
+        const unsolved = QUESTIONS.filter(q => !state.solvedSet.has(q.id) && q.id !== state.currentIdx);
+        const pool = unsolved.length > 0 ? unsolved : QUESTIONS.filter(q => q.id !== state.currentIdx);
+        const pick = pool[Math.floor(Math.random() * pool.length)];
+        loadLevel(pick ? pick.id : 0);
+      } else {
+        const nextIdx = (state.currentIdx + 1) % QUESTIONS.length;
+        loadLevel(nextIdx);
+      }
+    }
+
+    /**
+     * ============================================================================
+     * HỘP QUÀ TRỢ GIÚP (GỢI Ý)
+     * ============================================================================
+     */
+    function openHintModal() {
+      updateCoinsUI();
+      els.modalHint.classList.remove('hidden');
+    }
+
+    function closeHintModal() {
+      els.modalHint.classList.add('hidden');
+    }
+
+    function hintRevealOneChar() {
+      if (state.isChecking) return;
+      const COST = 30;
+      if (state.coins < COST) {
+        showToast('Không đủ 30 xu! Bấm nhận +100 xu miễn phí bên dưới nhé.');
+        SFX.error();
+        return;
+      }
+
+      const q = QUESTIONS[state.currentIdx];
+      const targetChars = Array.from(q.formula);
+
+      // Ưu tiên ô trống đầu tiên; nếu hết ô trống thì chọn ô điền sai đầu tiên chưa khóa
+      let pos = state.slots.findIndex(s => s.char === null);
+      if (pos === -1) {
+        pos = state.slots.findIndex((s, i) => !s.locked && s.char !== targetChars[i]);
+      }
+      if (pos === -1) {
+        showToast('Tất cả các ô đã đúng rồi!');
+        return;
+      }
+
+      // Nếu ô đang chứa ký tự sai, trả phím cũ về bàn phím
+      if (state.slots[pos].char !== null && state.slots[pos].keyIdx !== null) {
+        state.keys[state.slots[pos].keyIdx].used = false;
+        state.slots[pos] = { char: null, keyIdx: null, locked: false };
+      }
+
+      const neededChar = targetChars[pos];
+
+      // Tìm phím chưa dùng và đúng ký tự cần điền (ưu tiên phím đáp án gốc)
+      let keyObj = state.keys.find(k => !k.used && !k.eliminated && k.isAnswerChar && k.char === neededChar)
+                || state.keys.find(k => !k.used && !k.eliminated && k.char === neededChar);
+
+      // Nếu tất cả phím khớp đang bị đặt nhầm ở ô khác chưa khóa, rút về
+      if (!keyObj) {
+        const wrongSlotIdx = state.slots.findIndex((s, i) => !s.locked && s.char === neededChar && targetChars[i] !== neededChar);
+        if (wrongSlotIdx !== -1 && state.slots[wrongSlotIdx].keyIdx !== null) {
+          keyObj = state.keys[state.slots[wrongSlotIdx].keyIdx];
+          state.slots[wrongSlotIdx] = { char: null, keyIdx: null, locked: false };
+          keyObj.used = false;
+        }
+      }
+
+      if (!keyObj) {
+        showToast('Không tìm thấy phím phù hợp, hãy thử xóa bớt ô!');
+        return;
+      }
+
+      state.coins -= COST;
+      keyObj.used = true;
+      keyObj.eliminated = false;
+      state.slots[pos] = {
+        char: neededChar,
+        keyIdx: keyObj.idx,
+        locked: true
+      };
+
+      SFX.coin();
+      updateCoinsUI();
+      saveProgress();
+      closeHintModal();
+      renderSlots();
+      renderKeyboard();
+      showToast(`Đã mở ký tự "${neededChar}" tại vị trí ${pos + 1}!`);
+
+      if (state.slots.every(s => s.char !== null)) {
+        evaluateAnswer(false);
+      }
+    }
+
+    function hintRemoveNoise() {
+      if (state.isChecking) return;
+      const COST = 40;
+      if (state.coins < COST) {
+        showToast('Không đủ 40 xu! Bạn có thể nhận +100 xu miễn phí.');
+        SFX.error();
+        return;
+      }
+
+      const distractors = state.keys.filter(k => !k.isAnswerChar && !k.eliminated);
+      if (distractors.length === 0) {
+        showToast('Không còn ký tự nhiễu nào để loại bỏ!');
+        return;
+      }
+
+      const countToRemove = distractors.length <= 3 ? distractors.length : Math.ceil(distractors.length / 2);
+      for (let i = 0; i < countToRemove; i++) {
+        const k = distractors[i];
+        // Nếu phím nhiễu này đang nằm trong ô đáp án chưa khóa thì gỡ ra
+        if (k.used) {
+          const sIdx = state.slots.findIndex(s => s.keyIdx === k.idx && !s.locked);
+          if (sIdx !== -1) {
+            state.slots[sIdx] = { char: null, keyIdx: null, locked: false };
+          }
+          k.used = false;
+        }
+        k.eliminated = true;
+      }
+
+      state.coins -= COST;
+      SFX.coin();
+      updateCoinsUI();
+      saveProgress();
+      closeHintModal();
+      renderSlots();
+      renderKeyboard();
+      showToast(`Đã gạch bỏ ${countToRemove} ký tự gây nhiễu!`);
+    }
+
+    function hintSolveLevel() {
+      if (state.isChecking) return;
+      const COST = 80;
+      if (state.coins < COST) {
+        showToast('Không đủ 80 xu! Bấm nhận +100 xu miễn phí nhé.');
+        SFX.error();
+        return;
+      }
+
+      const q = QUESTIONS[state.currentIdx];
+      state.coins -= COST;
+
+      // Đặt lại toàn bộ phím và điền chuẩn từng ký tự đáp án
+      state.keys.forEach(k => { k.used = false; });
+      const targetChars = Array.from(q.formula);
+      state.slots = targetChars.map(ch => {
+        const k = state.keys.find(item => !item.used && item.isAnswerChar && item.char === ch)
+               || state.keys.find(item => !item.used && item.char === ch);
+        if (k) {
+          k.used = true;
+          k.eliminated = false;
+        }
+        return {
+          char: ch,
+          keyIdx: k ? k.idx : null,
+          locked: true
+        };
+      });
+
+      updateCoinsUI();
+      saveProgress();
+      closeHintModal();
+      renderSlots();
+      renderKeyboard();
+      evaluateAnswer(true);
+    }
+
+    function claimFreeCoins() {
+      state.coins += 100;
+      SFX.coin();
+      updateCoinsUI();
+      saveProgress();
+      showToast('🎉 Đã nhận +100 xu miễn phí!');
+    }
+
+    /**
+     * ============================================================================
+     * MENU CHỌN MÀN CHƠI, LỌC LĨNH VỰC & TÌM KIẾM
+     * ============================================================================
+     */
+    function openMenuModal() {
+      els.resetConfirmBox.classList.add('hidden');
+      renderMenuStats();
+      renderCategoryFilters();
+      renderShuffleToggle();
+      renderLevelGrid();
+      els.modalMenu.classList.remove('hidden');
+    }
+
+    function closeMenuModal() {
+      els.modalMenu.classList.add('hidden');
+    }
+
+    function renderMenuStats() {
+      const solved = state.solvedSet.size;
+      const total = QUESTIONS.length;
+      const pct = total > 0 ? Math.round((solved / total) * 100) : 0;
+      els.progressText.textContent = `Đã vượt qua ${solved} / ${total} màn (${pct}%)`;
+      els.progressBarFill.style.width = `${pct}%`;
+    }
+
+    function renderShuffleToggle() {
+      if (state.shuffleMode) {
+        els.shuffleIcon.textContent = '🔀';
+        els.shuffleLabel.textContent = 'Ngẫu nhiên';
+        els.btnToggleShuffle.className = 'px-3 py-2 rounded-xl text-xs font-bold border transition shrink-0 flex items-center gap-1.5 bg-indigo-500/20 border-indigo-400/50 text-indigo-300';
+      } else {
+        els.shuffleIcon.textContent = '➡️';
+        els.shuffleLabel.textContent = 'Tuần tự';
+        els.btnToggleShuffle.className = 'px-3 py-2 rounded-xl text-xs font-bold border transition shrink-0 flex items-center gap-1.5 bg-[#131929] border-[#25304A] text-slate-300';
+      }
+    }
+
+    function renderCategoryFilters() {
+      els.categoryFilters.innerHTML = '';
+      Object.values(CATEGORIES).forEach(cat => {
+        const count = cat.id === 'ALL'
+          ? QUESTIONS.length
+          : QUESTIONS.filter(q => q.cat === cat.id).length;
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        const isActive = state.activeFilter === cat.id;
+        btn.className = isActive
+          ? 'px-3 py-1.5 rounded-full text-xs font-bold bg-amber-500 text-[#140E03] shrink-0 transition'
+          : 'px-3 py-1.5 rounded-full text-xs font-semibold bg-[#131929] text-slate-300 border border-[#242F49] shrink-0 transition';
+        btn.textContent = `${cat.icon} ${cat.label} (${count})`;
+        btn.addEventListener('click', () => {
+          state.activeFilter = cat.id;
+          renderCategoryFilters();
+          renderLevelGrid();
+        });
+        els.categoryFilters.appendChild(btn);
+      });
+    }
+
+    function renderLevelGrid() {
+      const qNorm = normalizeVN(state.searchQuery.trim());
+      const filtered = QUESTIONS.filter(q => {
+        if (state.activeFilter !== 'ALL' && q.cat !== state.activeFilter) return false;
+        if (!qNorm) return true;
+        return (
+          String(q.level).includes(qNorm) ||
+          q.formula.toLowerCase().includes(qNorm) ||
+          normalizeVN(q.name).includes(qNorm) ||
+          normalizeVN(q.hint).includes(qNorm)
+        );
+      });
+
+      els.levelGrid.innerHTML = '';
+
+      if (filtered.length === 0) {
+        els.levelGrid.innerHTML = `
+          <div class="col-span-5 py-12 text-center text-slate-500 text-sm">
+            Không tìm thấy màn chơi phù hợp.
+          </div>`;
+        return;
+      }
+
+      const frag = document.createDocumentFragment();
+      filtered.forEach(q => {
+        const isSolved = state.solvedSet.has(q.id);
+        const isCurrent = q.id === state.currentIdx;
+
+        const tile = document.createElement('button');
+        tile.type = 'button';
+
+        let cls = 'relative flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl border transition active:scale-95 ';
+        if (isCurrent) {
+          cls += 'bg-amber-500/15 border-amber-400 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.25)]';
+        } else if (isSolved) {
+          cls += 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300';
+        } else {
+          cls += 'bg-[#131929] border-[#232D45] text-slate-200 hover:border-slate-500';
+        }
+
+        tile.className = cls;
+        tile.innerHTML = `
+          <span class="text-base leading-none mb-1">${q.emojis[0]}</span>
+          <span class="text-[12px] font-extrabold leading-none">${q.level}</span>
+          ${isSolved ? '<span class="absolute top-1 right-1 text-[9px] text-emerald-400">✓</span>' : ''}
+        `;
+        tile.addEventListener('click', () => {
+          closeMenuModal();
+          loadLevel(q.id);
+        });
+        frag.appendChild(tile);
+      });
+
+      els.levelGrid.appendChild(frag);
+    }
+
+    /**
+     * ============================================================================
+     * HIỆU ỨNG PHÁO HOA CONFETTI TRÊN CANVAS
+     * ============================================================================
+     */
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    let particles = [];
+    let confettiRaf = null;
+
+    function resizeConfettiCanvas() {
+      const shell = document.getElementById('app-shell');
+      if (!shell) return;
+      confettiCanvas.width = shell.clientWidth;
+      confettiCanvas.height = shell.clientHeight;
+    }
+
+    function launchConfetti() {
+      resizeConfettiCanvas();
+      const colors = ['#10B981', '#F59E0B', '#38BDF8', '#A78BFA', '#F43F5E', '#FDE047'];
+      const cx = confettiCanvas.width / 2;
+      const cy = confettiCanvas.height * 0.42;
+
+      for (let i = 0; i < 65; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 3 + Math.random() * 6.5;
+        particles.push({
+          x: cx,
+          y: cy,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 3.5,
+          size: 5 + Math.random() * 5,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rot: Math.random() * Math.PI * 2,
+          vrot: (Math.random() - 0.5) * 0.25,
+          life: 1
+        });
+      }
+
+      if (!confettiRaf) {
+        animateConfetti();
+      }
+    }
+
+    function animateConfetti() {
+      confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      particles = particles.filter(p => p.life > 0.02);
+
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.18;
+        p.vx *= 0.99;
+        p.rot += p.vrot;
+        p.life -= 0.016;
+
+        confettiCtx.save();
+        confettiCtx.globalAlpha = Math.max(0, p.life);
+        confettiCtx.translate(p.x, p.y);
+        confettiCtx.rotate(p.rot);
+        confettiCtx.fillStyle = p.color;
+        confettiCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        confettiCtx.restore();
+      }
+
+      if (particles.length > 0) {
+        confettiRaf = requestAnimationFrame(animateConfetti);
+      } else {
+        confettiRaf = null;
+      }
+    }
+
+    /**
+     * ============================================================================
+     * GẮN SỰ KIỆN & KHỞI CHẠY ỨNG DỤNG
+     * ============================================================================
+     */
+    function bindEvents() {
+      els.btnSound.addEventListener('click', () => {
+        state.soundOn = !state.soundOn;
+        renderSoundButton();
+        saveProgress();
+        if (state.soundOn) SFX.tap();
+      });
+
+      els.btnClearAll.addEventListener('click', clearAllUnlockedSlots);
+      els.btnOpenHint.addEventListener('click', openHintModal);
+      els.btnCloseHint.addEventListener('click', closeHintModal);
+      els.modalHint.addEventListener('click', (e) => {
+        if (e.target === els.modalHint) closeHintModal();
+      });
+
+      els.actRevealOne.addEventListener('click', hintRevealOneChar);
+      els.actRemoveNoise.addEventListener('click', hintRemoveNoise);
+      els.actSolveLevel.addEventListener('click', hintSolveLevel);
+      els.actFreeCoins.addEventListener('click', claimFreeCoins);
+
+      els.btnNextLevel.addEventListener('click', goToNextLevel);
+
+      els.btnOpenMenu.addEventListener('click', openMenuModal);
+      els.btnCloseMenu.addEventListener('click', closeMenuModal);
+
+      els.menuSearch.addEventListener('input', (e) => {
+        state.searchQuery = e.target.value;
+        renderLevelGrid();
+      });
+
+      els.btnToggleShuffle.addEventListener('click', () => {
+        state.shuffleMode = !state.shuffleMode;
+        renderShuffleToggle();
+        els.shuffleIndicator.classList.toggle('hidden', !state.shuffleMode);
+        saveProgress();
+        showToast(state.shuffleMode ? '🔀 Đã bật chế độ trộn ngẫu nhiên' : '➡️ Đã chuyển về chế độ tuần tự');
+      });
+
+      els.btnJumpUnsolved.addEventListener('click', () => {
+        const target = QUESTIONS.find(q => !state.solvedSet.has(q.id));
+        closeMenuModal();
+        if (target) {
+          loadLevel(target.id);
+          showToast(`Chuyển tới Màn ${target.level}`);
+        } else {
+          showToast('🏆 Bạn đã chinh phục toàn bộ các màn!');
+        }
+      });
+
+      els.btnAskReset.addEventListener('click', () => {
+        els.resetConfirmBox.classList.remove('hidden');
+      });
+      els.btnCancelReset.addEventListener('click', () => {
+        els.resetConfirmBox.classList.add('hidden');
+      });
+      els.btnConfirmReset.addEventListener('click', () => {
+        state.solvedSet.clear();
+        state.coins = 150;
+        state.currentIdx = 0;
+        saveProgress();
+        els.resetConfirmBox.classList.add('hidden');
+        renderMenuStats();
+        renderLevelGrid();
+        loadLevel(0);
+        showToast('Đã đặt lại toàn bộ tiến độ!');
+      });
+
+      // Hỗ trợ bàn phím cứng nếu mở trên máy tính/máy tính bảng
+      window.addEventListener('keydown', (e) => {
+        if (!els.modalMenu.classList.contains('hidden')) return;
+        if (!els.modalVictory.classList.contains('hidden')) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            goToNextLevel();
+          }
+          return;
+        }
+        if (!els.modalHint.classList.contains('hidden')) {
+          if (e.key === 'Escape') closeHintModal();
+          return;
+        }
+
+        if (e.key === 'Backspace') {
+          for (let i = state.slots.length - 1; i >= 0; i--) {
+            if (state.slots[i].char !== null && !state.slots[i].locked) {
+              handleSlotClick(i);
+              break;
+            }
+          }
+          return;
+        }
+
+        if (e.key.length === 1) {
+          const matchKey = state.keys.find(k => !k.used && !k.eliminated && k.char === e.key);
+          if (matchKey) {
+            handleKeyTap(matchKey.idx);
+          }
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        resizeConfettiCanvas();
+        renderSlots();
+      });
+    }
+
+    window.addEventListener('load', () => {
+      loadProgress();
+      renderSoundButton();
+      resizeConfettiCanvas();
+      bindEvents();
+      loadLevel(state.currentIdx);
+    });
+  </script>
+</body>
+</html>
